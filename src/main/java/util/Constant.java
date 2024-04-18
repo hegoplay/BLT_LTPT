@@ -13,4 +13,5 @@ public class Constant {
 	public static final Color CYAN_6 = new Color(16, 96, 141);
 	public static final Color CYAN_7 = new Color(8, 65, 107);
 	public static final Font BOLD_22_TITLE = new Font("Tahoma", Font.BOLD, 22);
+	public static final Font BOLD_16 = new Font("Tahoma", Font.BOLD, 16);
 }

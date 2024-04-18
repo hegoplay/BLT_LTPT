@@ -7,6 +7,8 @@ import util.Constant;
 import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
+import javax.swing.JList;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
@@ -19,7 +21,11 @@ import javax.swing.border.LineBorder;
 
 import com.toedter.calendar.JDateChooser;
 
+import component.PersonTable;
+
 import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
 import java.awt.Font;
@@ -30,8 +36,14 @@ import javax.swing.JRadioButton;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
 
 import java.awt.FlowLayout;
+import javax.swing.border.TitledBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
 
 public class PnlQLND extends JPanel {
 
@@ -44,12 +56,28 @@ public class PnlQLND extends JPanel {
 	private JTextField txtStreet;
 	private JTextField txtCity;
 	private JTextField txtZip;
+	private JTable table;
+	private JTextField txtFindById;
+	private PersonTable tblPerson;
 
+	enum PersonType {
+		CUSTOMER("Khách hàng"), STORAGE_EMPLOYEE("NV Tồn Kho"), STATISTIC_EMPLOYEE("NV Thống kê");
+		private String value;
+
+		public String getValue() {
+			return value;
+		}
+		
+		PersonType(String value) {
+			this.value = value;
+		}
+	}
+	
 	/**
 	 * Create the panel.
 	 */
 	public PnlQLND() {
-		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setBorder(new EmptyBorder(10, 10, 10, 10));
 		class GridData {
 			public int x;
 			public int y;
@@ -72,7 +100,7 @@ public class PnlQLND extends JPanel {
 //		set jpanel color
 		setBackground(Constant.BACKGROUND_COLOR);
 //		set layout borderlayout
-		setLayout(new BorderLayout(0, 0));
+		setLayout(new BorderLayout(20, 0));
 
 		JPanel pnlTTNguoiDung = new JPanel();
 		pnlTTNguoiDung.setBorder(new EmptyBorder(20, 5, 0, 5));
@@ -300,14 +328,17 @@ public class PnlQLND extends JPanel {
 		pnlType.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		JRadioButton rdCustomer = new JRadioButton("Khách hàng");
+		rdCustomer.setFont(Constant.BOLD_16);
 		rdCustomer.setBackground(Constant.CYAN_2);
 		pnlType.add(rdCustomer);
 
 		JRadioButton rdStorageEmployee = new JRadioButton("NV Tồn kho");
+		rdStorageEmployee.setFont(Constant.BOLD_16);
 		rdStorageEmployee.setBackground(Constant.CYAN_2);
 		pnlType.add(rdStorageEmployee);
 
 		JRadioButton rdStatisticEmployee = new JRadioButton("NV Thống kê");
+		rdStatisticEmployee.setFont(Constant.BOLD_16);
 		rdStatisticEmployee.setBackground(Constant.CYAN_2);
 		pnlType.add(rdStatisticEmployee);
 
@@ -344,6 +375,59 @@ public class PnlQLND extends JPanel {
 		personType.add(rdCustomer);
 		personType.add(rdStorageEmployee);
 		personType.add(rdStatisticEmployee);
+		
+		JPanel pnlTable = new JPanel();
+		pnlTable.setBackground(Constant.CYAN_2);
+		pnlTable.setBorder(new TitledBorder(null, "Th\u00F4ng tin ng\u01B0\u1EDDi d\u00F9ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		add(pnlTable, BorderLayout.CENTER);
+		pnlTable.setLayout(new BorderLayout(0, 0));
+		
+		JPanel pnlInfo = new JPanel();
+		pnlInfo.setBackground(Constant.CYAN_2);
+		pnlTable.add(pnlInfo, BorderLayout.NORTH);
+		FlowLayout fl_pnlInfo = new FlowLayout();
+		fl_pnlInfo.setHgap(10);
+		pnlInfo.setLayout(fl_pnlInfo);
+		
+		Label lblFindById = new Label("Mã người");
+		lblFindById.setFont(Constant.BOLD_16);
+		pnlInfo.add(lblFindById);
+		
+		txtFindById = new JTextField();
+		txtFindById.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		pnlInfo.add(txtFindById);
+		txtFindById.setColumns(10);
+		
+		Label lblType = new Label("Loại người");
+		lblType.setFont(Constant.BOLD_16);
+		pnlInfo.add(lblType);
+		
+		JComboBox<PersonType> cmbType = new JComboBox<PersonType>(PersonType.values()) ;
+		cmbType.setFont(Constant.BOLD_16);
+		cmbType.setRenderer(new DefaultListCellRenderer() {
+			
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				// TODO Auto-generated method stub
+				value = ((PersonType)value).getValue();
+				return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			}
+		});
+//		cmbType.addItem("Khách hàng");
+		pnlInfo.add(cmbType);
+		
+		JButton btnFind = new JButton("Tìm");
+		btnFind.setBackground(Constant.CYAN_6);
+		btnFind.setForeground(Color.WHITE);
+		btnFind.setFont(Constant.BOLD_16);
+		pnlInfo.add(btnFind);
+		
+		JScrollPane srcPerson = new JScrollPane();
+		pnlTable.add(srcPerson, BorderLayout.CENTER);
+		
+		tblPerson = new PersonTable();
+		srcPerson.setViewportView(tblPerson);
 
 	}
 

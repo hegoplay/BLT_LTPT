@@ -74,8 +74,9 @@ public class ServerFrame extends JFrame implements ActionListener {
 		mnbServer.add(mnCheckLog);
 		
 		mntmAllLog = new JMenuItem("Log");
+		mntmAllLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
 		mnCheckLog.add(mntmAllLog);
-		mnQuanLy.addActionListener(this);
+		mntmAllLog.addActionListener(this);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setBackground(Constant.BACKGROUND_COLOR);
@@ -83,13 +84,22 @@ public class ServerFrame extends JFrame implements ActionListener {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout(0, 0));
-		contentPane.add(new PnlQLND(), "QLND");
+		PnlQLND pnlQLND = new PnlQLND();
+		contentPane.add(pnlQLND, "QLND");
+		PnlLog pnlLog = new PnlLog();
+		contentPane.add(pnlLog, "LOG");
+		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == mntmQLND) {
-			System.out.println("Quản lý người dùng");
+			CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+			cardLayout.show(contentPane, "QLND");
+		}
+		else if (e.getSource()==mntmAllLog) {
+			CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+			cardLayout.show(contentPane, "LOG");
 		}
 	}
 	

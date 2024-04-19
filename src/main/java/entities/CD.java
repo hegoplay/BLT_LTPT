@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -13,7 +14,12 @@ import jakarta.persistence.Table;
 @lombok.NoArgsConstructor
 @Entity
 @Table(name = "cds")
-public class CD {
+@lombok.ToString
+public class CD implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8897589669826109808L;
 	@Id
 	@Column(name = "cd_id")
 	private String cdID;

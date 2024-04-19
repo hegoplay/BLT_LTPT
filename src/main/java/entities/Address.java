@@ -7,6 +7,7 @@ import jakarta.persistence.Embeddable;
 @lombok.Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
+@lombok.ToString
 public class Address implements java.io.Serializable{
 	/**
 	 * 

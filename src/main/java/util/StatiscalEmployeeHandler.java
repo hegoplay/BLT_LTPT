@@ -5,14 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class CustomerHandler implements Runnable {
+public class StatiscalEmployeeHandler implements Runnable {
 
 	private Socket socket;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	
 	
-	public CustomerHandler(Socket socket) {
+	public StatiscalEmployeeHandler(Socket socket) {
 		super();
 		this.socket = socket;
 	}

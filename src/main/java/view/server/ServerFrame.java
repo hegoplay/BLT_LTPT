@@ -21,6 +21,11 @@ import java.awt.event.InputEvent;
 import javax.swing.ImageIcon;
 import java.awt.CardLayout;
 
+
+
+/**
+ * @author hegoplay
+ */
 public class ServerFrame extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;

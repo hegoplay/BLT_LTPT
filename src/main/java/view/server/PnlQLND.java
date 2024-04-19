@@ -3,17 +3,22 @@ package view.server;
 import javax.swing.JPanel;
 
 import util.Constant;
+import util.PersonType;
+import util.ValidateForm;
 
 import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -22,6 +27,13 @@ import javax.swing.border.LineBorder;
 import com.toedter.calendar.JDateChooser;
 
 import component.PersonTable;
+import dao.PersonDAO;
+import entities.Account;
+import entities.Address;
+import entities.Customer;
+import entities.Person;
+import entities.StatiscalEmployee;
+import entities.StorageEmployee;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,6 +42,10 @@ import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
 import java.awt.Font;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -45,7 +61,10 @@ import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
-public class PnlQLND extends JPanel {
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Validate;
+
+public class PnlQLND extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField txtId;
@@ -59,19 +78,21 @@ public class PnlQLND extends JPanel {
 	private JTable table;
 	private JTextField txtFindById;
 	private PersonTable tblPerson;
+	private JButton btnFind;
+	private JComboBox<PersonType> cmbType;
+	private JButton btnRefresh;
+	private JButton btnAdd;
+	private JButton btnFix;
+	private ButtonGroup personType;
+	private JRadioButton rdCustomer;
+	private JRadioButton rdStorageEmployee;
+	private JRadioButton rdStatisticEmployee;
+	private JDateChooser registDate;
+	private JDateChooser bornDate;
+	private JTextField txtEmail;
+	private JButton btnDelete;
 
-	enum PersonType {
-		CUSTOMER("Khách hàng"), STORAGE_EMPLOYEE("NV Tồn Kho"), STATISTIC_EMPLOYEE("NV Thống kê");
-		private String value;
-
-		public String getValue() {
-			return value;
-		}
-		
-		PersonType(String value) {
-			this.value = value;
-		}
-	}
+	
 	
 	/**
 	 * Create the panel.
@@ -109,9 +130,9 @@ public class PnlQLND extends JPanel {
 		pnlTTNguoiDung.setBackground(Constant.CYAN_2);
 		GridBagLayout gbl_pnlTTNguoiDung = new GridBagLayout();
 		gbl_pnlTTNguoiDung.columnWidths = new int[] { 375 - 230, 230 };
-		gbl_pnlTTNguoiDung.rowHeights = new int[] { 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_pnlTTNguoiDung.rowHeights = new int[] { 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_pnlTTNguoiDung.columnWeights = new double[] { 1.0, 1.0 };
-		gbl_pnlTTNguoiDung.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_pnlTTNguoiDung.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				1.0, Double.MIN_VALUE };
 		pnlTTNguoiDung.setLayout(gbl_pnlTTNguoiDung);
 
@@ -146,6 +167,7 @@ public class PnlQLND extends JPanel {
 		pnlTTNguoiDung.add(lblId, gbc_lblId);
 
 		txtId = new JTextField();
+		txtId.setEditable(false);
 		txtId.setText("KHPTM015");
 		GridBagConstraints gbc_txtId = new GridBagConstraints();
 		gbc_txtId.insets = new Insets(0, 0, 5, 0);
@@ -174,6 +196,25 @@ public class PnlQLND extends JPanel {
 		gbc_txtName.gridy = 3;
 		pnlTTNguoiDung.add(txtName, gbc_txtName);
 		txtName.setColumns(10);
+		
+		JLabel lblEmail = new JLabel("Email");
+		lblEmail.setFont(Constant.BOLD_22_TITLE);
+		GridBagConstraints gbc_lblEmail = new GridBagConstraints();
+		gbc_lblEmail.anchor = GridBagConstraints.EAST;
+		gbc_lblEmail.insets = new Insets(0, 0, 5, 5);
+		gbc_lblEmail.gridx = 0;
+		gbc_lblEmail.gridy = 4;
+		pnlTTNguoiDung.add(lblEmail, gbc_lblEmail);
+		
+		txtEmail = new JTextField();
+		txtEmail.setText("thmnh113@gmail.com");
+		GridBagConstraints gbc_txtEmail = new GridBagConstraints();
+		gbc_txtEmail.insets = new Insets(0, 0, 5, 0);
+		gbc_txtEmail.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtEmail.gridx = 1;
+		gbc_txtEmail.gridy = 4;
+		pnlTTNguoiDung.add(txtEmail, gbc_txtEmail);
+		txtEmail.setColumns(10);
 
 		Label lblBornDate = new Label("Ngày sinh");
 		lblBornDate.setFont(Constant.BOLD_22_TITLE);
@@ -181,15 +222,15 @@ public class PnlQLND extends JPanel {
 		gbc_lblBornDate.anchor = GridBagConstraints.EAST;
 		gbc_lblBornDate.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBornDate.gridx = 0;
-		gbc_lblBornDate.gridy = 4;
+		gbc_lblBornDate.gridy = 5;
 		pnlTTNguoiDung.add(lblBornDate, gbc_lblBornDate);
 
-		JDateChooser bornDate = new JDateChooser();
+		bornDate = new JDateChooser();
 		GridBagConstraints gbc_bornDate = new GridBagConstraints();
 		gbc_bornDate.insets = new Insets(0, 0, 5, 0);
 		gbc_bornDate.fill = GridBagConstraints.HORIZONTAL;
 		gbc_bornDate.gridx = 1;
-		gbc_bornDate.gridy = 4;
+		gbc_bornDate.gridy = 5;
 		pnlTTNguoiDung.add(bornDate, gbc_bornDate);
 
 		JLabel lblAccount = new JLabel("Tài khoản");
@@ -198,15 +239,17 @@ public class PnlQLND extends JPanel {
 		gbc_lblAccount.anchor = GridBagConstraints.EAST;
 		gbc_lblAccount.insets = new Insets(0, 0, 5, 5);
 		gbc_lblAccount.gridx = 0;
-		gbc_lblAccount.gridy = 5;
+		gbc_lblAccount.gridy = 6;
 		pnlTTNguoiDung.add(lblAccount, gbc_lblAccount);
 
 		txtAccount = new JTextField();
+		txtAccount.setText("hegoplay");
+		txtAccount.setToolTipText("");
 		GridBagConstraints gbc_txtAccount = new GridBagConstraints();
 		gbc_txtAccount.insets = new Insets(0, 0, 5, 0);
 		gbc_txtAccount.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtAccount.gridx = 1;
-		gbc_txtAccount.gridy = 5;
+		gbc_txtAccount.gridy = 6;
 		pnlTTNguoiDung.add(txtAccount, gbc_txtAccount);
 		txtAccount.setColumns(10);
 
@@ -216,7 +259,7 @@ public class PnlQLND extends JPanel {
 		gbc_lblPassword.anchor = GridBagConstraints.EAST;
 		gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPassword.gridx = 0;
-		gbc_lblPassword.gridy = 6;
+		gbc_lblPassword.gridy = 7;
 		pnlTTNguoiDung.add(lblPassword, gbc_lblPassword);
 
 		password = new JPasswordField();
@@ -224,7 +267,7 @@ public class PnlQLND extends JPanel {
 		gbc_password.insets = new Insets(0, 0, 5, 0);
 		gbc_password.fill = GridBagConstraints.HORIZONTAL;
 		gbc_password.gridx = 1;
-		gbc_password.gridy = 6;
+		gbc_password.gridy = 7;
 		pnlTTNguoiDung.add(password, gbc_password);
 
 		JLabel lblHouseNo = new JLabel("Số nhà");
@@ -233,15 +276,16 @@ public class PnlQLND extends JPanel {
 		gbc_lblHouseNo.anchor = GridBagConstraints.EAST;
 		gbc_lblHouseNo.insets = new Insets(0, 0, 5, 5);
 		gbc_lblHouseNo.gridx = 0;
-		gbc_lblHouseNo.gridy = 7;
+		gbc_lblHouseNo.gridy = 8;
 		pnlTTNguoiDung.add(lblHouseNo, gbc_lblHouseNo);
 
 		txtHouseNo = new JTextField();
+		txtHouseNo.setText("64/4");
 		GridBagConstraints gbc_txtHouseNo = new GridBagConstraints();
 		gbc_txtHouseNo.insets = new Insets(0, 0, 5, 0);
 		gbc_txtHouseNo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtHouseNo.gridx = 1;
-		gbc_txtHouseNo.gridy = 7;
+		gbc_txtHouseNo.gridy = 8;
 		pnlTTNguoiDung.add(txtHouseNo, gbc_txtHouseNo);
 		txtHouseNo.setColumns(10);
 
@@ -251,15 +295,16 @@ public class PnlQLND extends JPanel {
 		gbc_lblStreet.anchor = GridBagConstraints.EAST;
 		gbc_lblStreet.insets = new Insets(0, 0, 5, 5);
 		gbc_lblStreet.gridx = 0;
-		gbc_lblStreet.gridy = 8;
+		gbc_lblStreet.gridy = 9;
 		pnlTTNguoiDung.add(lblStreet, gbc_lblStreet);
 
 		txtStreet = new JTextField();
+		txtStreet.setText("6");
 		GridBagConstraints gbc_txtStreet = new GridBagConstraints();
 		gbc_txtStreet.insets = new Insets(0, 0, 5, 0);
 		gbc_txtStreet.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtStreet.gridx = 1;
-		gbc_txtStreet.gridy = 8;
+		gbc_txtStreet.gridy = 9;
 		pnlTTNguoiDung.add(txtStreet, gbc_txtStreet);
 		txtStreet.setColumns(10);
 
@@ -269,15 +314,16 @@ public class PnlQLND extends JPanel {
 		gbc_lblCity.insets = new Insets(0, 0, 5, 5);
 		gbc_lblCity.anchor = GridBagConstraints.EAST;
 		gbc_lblCity.gridx = 0;
-		gbc_lblCity.gridy = 9;
+		gbc_lblCity.gridy = 10;
 		pnlTTNguoiDung.add(lblCity, gbc_lblCity);
 
 		txtCity = new JTextField();
+		txtCity.setText("HCMC");
 		GridBagConstraints gbc_txtCity = new GridBagConstraints();
 		gbc_txtCity.insets = new Insets(0, 0, 5, 0);
 		gbc_txtCity.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtCity.gridx = 1;
-		gbc_txtCity.gridy = 9;
+		gbc_txtCity.gridy = 10;
 		pnlTTNguoiDung.add(txtCity, gbc_txtCity);
 		txtCity.setColumns(10);
 
@@ -287,15 +333,16 @@ public class PnlQLND extends JPanel {
 		gbc_lblZipCode.anchor = GridBagConstraints.EAST;
 		gbc_lblZipCode.insets = new Insets(0, 0, 5, 5);
 		gbc_lblZipCode.gridx = 0;
-		gbc_lblZipCode.gridy = 10;
+		gbc_lblZipCode.gridy = 11;
 		pnlTTNguoiDung.add(lblZipCode, gbc_lblZipCode);
 
 		txtZip = new JTextField();
+		txtZip.setText("713000");
 		GridBagConstraints gbc_txtZip = new GridBagConstraints();
 		gbc_txtZip.insets = new Insets(0, 0, 5,0);
 		gbc_txtZip.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtZip.gridx = 1;
-		gbc_txtZip.gridy = 10;
+		gbc_txtZip.gridy = 11;
 		pnlTTNguoiDung.add(txtZip, gbc_txtZip);
 		txtZip.setColumns(10);
 
@@ -305,39 +352,40 @@ public class PnlQLND extends JPanel {
 		gbc_lblRegistDate.anchor = GridBagConstraints.EAST;
 		gbc_lblRegistDate.insets = new Insets(0, 0, 5, 5);
 		gbc_lblRegistDate.gridx = 0;
-		gbc_lblRegistDate.gridy = 11;
+		gbc_lblRegistDate.gridy = 12;
 		pnlTTNguoiDung.add(lblRegistDate, gbc_lblRegistDate);
 
-		JDateChooser registDate = new JDateChooser();
+		registDate = new JDateChooser();
 		GridBagConstraints gbc_registDate = new GridBagConstraints();
 		gbc_registDate.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registDate.insets = new Insets(0, 0, 5, 0);
 		gbc_registDate.gridx = 1;
-		gbc_registDate.gridy = 11;
+		gbc_registDate.gridy = 12;
 		pnlTTNguoiDung.add(registDate, gbc_registDate);
 
 		JPanel pnlType = new JPanel();
 		pnlType.setBackground(Constant.CYAN_2);
 		GridBagConstraints gbc_pnlType = new GridBagConstraints();
 		gbc_pnlType.gridwidth = 2;
-		gbc_pnlType.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlType.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlType.fill = GridBagConstraints.BOTH;
 		gbc_pnlType.gridx = 0;
-		gbc_pnlType.gridy = 12;
+		gbc_pnlType.gridy = 13;
 		pnlTTNguoiDung.add(pnlType, gbc_pnlType);
 		pnlType.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JRadioButton rdCustomer = new JRadioButton("Khách hàng");
+		rdCustomer = new JRadioButton("Khách hàng");
+		rdCustomer.setSelected(true);
 		rdCustomer.setFont(Constant.BOLD_16);
 		rdCustomer.setBackground(Constant.CYAN_2);
 		pnlType.add(rdCustomer);
 
-		JRadioButton rdStorageEmployee = new JRadioButton("NV Tồn kho");
+		rdStorageEmployee = new JRadioButton("NV Tồn kho");
 		rdStorageEmployee.setFont(Constant.BOLD_16);
 		rdStorageEmployee.setBackground(Constant.CYAN_2);
 		pnlType.add(rdStorageEmployee);
 
-		JRadioButton rdStatisticEmployee = new JRadioButton("NV Thống kê");
+		rdStatisticEmployee = new JRadioButton("NV Thống kê");
 		rdStatisticEmployee.setFont(Constant.BOLD_16);
 		rdStatisticEmployee.setBackground(Constant.CYAN_2);
 		pnlType.add(rdStatisticEmployee);
@@ -348,29 +396,35 @@ public class PnlQLND extends JPanel {
 		gbc_pnlOptions.gridwidth = 2;
 		gbc_pnlOptions.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pnlOptions.gridx = 0;
-		gbc_pnlOptions.gridy = 13;
+		gbc_pnlOptions.gridy = 14;
 		pnlTTNguoiDung.add(pnlOptions, gbc_pnlOptions);
 
-		JButton btnAdd = new JButton("Thêm");
+		btnAdd = new JButton("Thêm");
 		btnAdd.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		btnAdd.setBackground(Constant.CYAN_6);
 		btnAdd.setForeground(Color.WHITE);
 		pnlOptions.add(btnAdd);
 
-		JButton btnFix = new JButton("Sửa");
+		btnFix = new JButton("Sửa");
 		btnFix.setFont(new Font("Tahoma", Font.BOLD, 16));
 		btnFix.setBackground(Constant.CYAN_6);
 		btnFix.setForeground(Color.WHITE);
 		pnlOptions.add(btnFix);
 
-		JButton btnRefresh = new JButton("Làm mới");
+		btnRefresh = new JButton("Làm mới");
 		btnRefresh.setFont(new Font("Tahoma", Font.BOLD, 16));
 		btnRefresh.setBackground(Constant.CYAN_6);
 		btnRefresh.setForeground(Color.WHITE);
 		pnlOptions.add(btnRefresh);
 		
-		ButtonGroup personType = new ButtonGroup();
+		btnDelete = new JButton("Xóa");
+		btnDelete.setForeground(Color.WHITE);
+		btnDelete.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnDelete.setBackground(new Color(16, 96, 141));
+		pnlOptions.add(btnDelete);
+		
+		personType = new ButtonGroup();
 		
 		personType.add(rdCustomer);
 		personType.add(rdStorageEmployee);
@@ -402,7 +456,7 @@ public class PnlQLND extends JPanel {
 		lblType.setFont(Constant.BOLD_16);
 		pnlInfo.add(lblType);
 		
-		JComboBox<PersonType> cmbType = new JComboBox<PersonType>(PersonType.values()) ;
+		cmbType = new JComboBox<PersonType>(PersonType.values()) ;
 		cmbType.setFont(Constant.BOLD_16);
 		cmbType.setRenderer(new DefaultListCellRenderer() {
 			
@@ -417,7 +471,7 @@ public class PnlQLND extends JPanel {
 //		cmbType.addItem("Khách hàng");
 		pnlInfo.add(cmbType);
 		
-		JButton btnFind = new JButton("Tìm");
+		btnFind = new JButton("Tìm");
 		btnFind.setBackground(Constant.CYAN_6);
 		btnFind.setForeground(Color.WHITE);
 		btnFind.setFont(Constant.BOLD_16);
@@ -428,7 +482,191 @@ public class PnlQLND extends JPanel {
 		
 		tblPerson = new PersonTable();
 		srcPerson.setViewportView(tblPerson);
+		
+		btnFind.addActionListener(this);
+		btnRefresh.addActionListener(this);
+		btnAdd.addActionListener(this);
+		btnFix.addActionListener(this);
+		btnDelete.addActionListener(this);
+	
+		tblPerson.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int row = tblPerson.getSelectedRow();
+				Person p = PersonDAO.instance.findById(tblPerson.getValueAt(row, 0).toString());
+				txtId.setText(p.getPersonID());
+				txtName.setText(p.getName());
+				txtEmail.setText(p.getEmail());
+				txtAccount.setText(p.getAccount().getUserName());
+				txtHouseNo.setText(p.getAddress().getNumber());
+				txtStreet.setText(p.getAddress().getStreet());
+				txtCity.setText(p.getAddress().getCity());
+				txtZip.setText(p.getAddress().getZip());
+				registDate.setDate(Constant.convertToDateViaInstant(p.getRegistDate()));
+				bornDate.setDate(Constant.convertToDateViaInstant(p.getDob()));
+				if (p instanceof Customer) {
+					rdCustomer.setSelected(true);
+				} else if (p instanceof StorageEmployee) {
+					rdStorageEmployee.setSelected(true);
+				} else if (p instanceof StatiscalEmployee) {
+					rdStatisticEmployee.setSelected(true);
+				}
+				
+			}
+		});
+		
+		tblPerson.ReloadTable();
 
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if(o == btnFind) {
+			String id = txtFindById.getText();
+			PersonType type = (PersonType) cmbType.getSelectedItem();
+			tblPerson.findPerson(id, type);
+		}
+		if (o == btnRefresh) {
+			tblPerson.ReloadTable();
+			ResetField();
+		}
+		if(o == btnAdd) {
+			Person p = CreateNewPerson(GetPersonFromField());
+			if (p == null) {
+				JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin");
+				return;
+			}
+			PersonDAO.instance.insert(p);
+			tblPerson.ReloadTable();
+		}
+		if (o==btnFix){
+			if (txtId.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn người dùng cần sửa");
+				return;
+			}
+			Person temp = PersonDAO.instance.findById(txtId.getText());
+			if (temp == null) {
+				JOptionPane.showMessageDialog(null, "Người dùng không tồn tại");
+				return;
+			}
+			Person p = GetPersonFromField();
+			if (p == null) {
+				JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin");
+				return;
+			}
+			
+			PersonDAO.instance.update(p);
+			tblPerson.ReloadTable();
+		}
+		if (o == btnDelete) {
+			if (txtId.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn người dùng cần xóa");
+				return;
+			}
+			Person p = PersonDAO.instance.findById(txtId.getText());
+			if (p == null) {
+				JOptionPane.showMessageDialog(null, "Người dùng không tồn tại");
+				return;
+			}
+			PersonDAO.instance.delete(p);
+			tblPerson.ReloadTable();
+		}
+		
+	}
+
+	private Person CreateNewPerson(Person p) {
+		if (p == null) {
+			return null;
+		}
+		String personId = "";
+		if(rdCustomer.isSelected()) {
+			personId += "KH";
+		}
+		else if (rdStorageEmployee.isSelected()) {
+			personId += "NVKH";
+		} else if (rdStatisticEmployee.isSelected()) {
+			personId += "NVTK";
+		}
+		String[] nameArr = txtName.getText().split(" ");
+		for (String s : nameArr) {
+			personId += Character.toUpperCase(s.charAt(0));
+		}
+		
+		personId += Constant.convertToLocalDateViaInstant(registDate.getDate()).getDayOfYear();
+		personId += Constant.convertToLocalDateViaInstant(registDate.getDate()).getMonthValue();
+		personId += LocalDateTime.now().getHour();
+		personId += LocalDateTime.now().getMinute();
+		p.setPersonID(personId);
+		return p;
+	}
+	
+	private Person GetPersonFromField() {
+		// TODO Auto-generated method stub
+		Person currentPerson = null;
+		if ( txtName.getText().isEmpty() || ValidateForm.isEmail(txtEmail.getText()) == false
+				|| txtAccount.getText().isEmpty() || txtHouseNo.getText().isEmpty()
+				|| txtStreet.getText().isEmpty() || txtCity.getText().isEmpty() || ValidateForm.isZipCode(txtZip.getText()) == false
+				|| bornDate.getDate() == null) {
+			return null;
+		}
+		if (registDate == null) {
+			registDate.setDate(Constant.convertToDateViaInstant(LocalDate.now()));
+		}
+		if(rdCustomer.isSelected()) {
+			currentPerson = new Customer();
+		}
+		else if (rdStorageEmployee.isSelected()) {
+			currentPerson = new StorageEmployee();
+		} else if (rdStatisticEmployee.isSelected()){
+			currentPerson = new StatiscalEmployee();
+		}
+		
+		currentPerson.setPersonID(txtId.getText());
+		currentPerson.setName(txtName.getText());
+		currentPerson.setDob(Constant.convertToLocalDateViaInstant(bornDate.getDate()));
+		currentPerson.setEmail(txtEmail.getText());
+		Account account = new Account();
+		account.setUserName(txtAccount.getText());
+		currentPerson.setAccount(account);
+		String pass = new String(this.password.getPassword());
+		if(password.getPassword().length > 0) {
+			pass = DigestUtils.sha1Hex(pass);
+		}
+		else if (PersonDAO.instance.findById(currentPerson.getPersonID()) == null) {
+			JOptionPane.showMessageDialog(null, "");
+			return null;
+			
+		}
+		else {
+			pass = PersonDAO.instance.findById(txtId.getText()).getAccount().getPassword();
+		}
+		account.setPassword(pass);
+		Address address = new Address();
+		address.setCity(txtCity.getText());
+		address.setNumber(txtHouseNo.getText());
+		address.setStreet(txtStreet.getText());
+		address.setZip(txtZip.getText());
+		currentPerson.setAddress(address);
+		currentPerson.setRegistDate(Constant.convertToLocalDateViaInstant(registDate.getDate()));
+//		p.setAccount(txtAccount.getText());
+		return currentPerson;
+	}
+
+	private void ResetField() {
+		txtId.setText("");
+		txtName.setText("");
+		txtAccount.setText("");
+		password.setText("");
+		txtHouseNo.setText("");
+		txtStreet.setText("");
+		txtCity.setText("");
+		txtZip.setText("");
+		cmbType.setSelectedIndex(0);
+		txtEmail.setText("");
+		bornDate.setDate(null);
+		registDate.setDate(null);
+	}
+	
 }

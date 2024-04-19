@@ -25,7 +25,7 @@ https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
 			<!-- Automatically export the schema -->
 			<property
 				name="jakarta.persistence.schema-generation.database.action"
-				value="drop-and-create" />
+				value="none" />
 
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />

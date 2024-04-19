@@ -2,6 +2,7 @@ package entities;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
@@ -21,6 +22,7 @@ import jakarta.persistence.Table;
 public abstract class Person {
 	@Id
 	private String personID;
+	@Column(name = "full_name", columnDefinition = "nvarchar(255)")
 	private String name;
 	private LocalDate dob;
 	private Address address;
@@ -28,4 +30,6 @@ public abstract class Person {
 	@jakarta.persistence.OneToOne
 	@jakarta.persistence.JoinColumn(name = "user_name")
 	private Account account;
+	@jakarta.persistence.Column(name = "regist_date")
+	private LocalDate registDate;
 }

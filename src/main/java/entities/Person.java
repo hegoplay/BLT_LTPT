@@ -19,7 +19,11 @@ import jakarta.persistence.Table;
 @jakarta.persistence.DiscriminatorColumn(name = "person_type")
 @jakarta.persistence.DiscriminatorValue("person")
 
-public abstract class Person {
+public abstract class Person implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1407820700872230272L;
 	@Id
 	private String personID;
 	@Column(name = "full_name", columnDefinition = "nvarchar(255)")

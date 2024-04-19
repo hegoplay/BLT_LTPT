@@ -22,6 +22,8 @@ public class Constant {
 	public static final Font BOLD_22_TITLE = new Font("Tahoma", Font.BOLD, 22);
 	public static final Font BOLD_16 = new Font("Tahoma", Font.BOLD, 16);
 
+	public static final int PORT = 8603;
+	
 	public static LocalDate convertToLocalDateViaInstant(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}

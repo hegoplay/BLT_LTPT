@@ -1,6 +1,6 @@
 package util;
 
-public enum PersonType {
+public enum PersonType implements java.io.Serializable{
 	NONE(" "),CUSTOMER("Khách hàng"), STORAGE_EMPLOYEE("NV Tồn Kho"), STATISCAL_EMPLOYEE("NV Thống kê");
 	private String value;
 

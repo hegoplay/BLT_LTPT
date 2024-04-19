@@ -11,7 +11,11 @@ import jakarta.persistence.Entity;
 @lombok.NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "orders")
-public class Order {
+public class Order implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8225572191751469055L;
 	@jakarta.persistence.Id
 	private String orderId;
 	@Column(name = "created_date")

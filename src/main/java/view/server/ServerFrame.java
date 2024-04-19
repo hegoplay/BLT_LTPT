@@ -91,7 +91,7 @@ public class ServerFrame extends JFrame implements ActionListener {
 		contentPane.setLayout(new CardLayout(0, 0));
 		PnlQLND pnlQLND = new PnlQLND();
 		contentPane.add(pnlQLND, "QLND");
-		PnlLog pnlLog = new PnlLog();
+		PnlServerLog pnlLog = new PnlServerLog();
 		contentPane.add(pnlLog, "LOG");
 		
 	}

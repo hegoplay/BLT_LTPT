@@ -7,7 +7,11 @@ import jakarta.persistence.Embeddable;
 @lombok.Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
-public class Address {
+public class Address implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7370205731677564447L;
 	private String zip;
 	private String city;
 	private String street;

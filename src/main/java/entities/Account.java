@@ -1,5 +1,7 @@
 package entities;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -9,7 +11,12 @@ import jakarta.persistence.Table;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @Table(name = "accounts")
-public class Account {
+@lombok.ToString
+public class Account implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6814884279485049540L;
 	@jakarta.persistence.Id
 	@jakarta.persistence.Column(name = "user_name")
 	private String userName;

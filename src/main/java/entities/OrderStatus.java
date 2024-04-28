@@ -1,7 +1,7 @@
 package entities;
 
 @lombok.Getter
-public enum OrderStatus {
+public enum OrderStatus implements java.io.Serializable{
 	PENDING("Pending"), DELIVERED("Delivered"), VALIDATED("Validated"), DELIVERING("Delivering");
 	private String status;
 

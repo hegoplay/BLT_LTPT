@@ -12,6 +12,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -61,10 +64,21 @@ public class product extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-//		CD = new DAO_SanPham();
-//		setBackground(new Color(221, 242, 251));
 		getContentPane().setLayout(null);
 
+		JMenuBar menuBar_1 = new JMenuBar();
+        menuBar_1.setBounds(1221, 11, 80, 50);
+        contentPane.add(menuBar_1);
+
+        JMenu quanLy = new JMenu("Người dùng");
+        menuBar_1.add(quanLy);
+
+        JMenuItem info = new JMenuItem("Thông Tin");
+        quanLy.add(info);
+
+        JMenuItem thoat = new JMenuItem("Thoát");
+        quanLy.add(thoat);
+		
 		JLabel lblTieuDe = new JLabel("Sản Phẩm");
 		lblTieuDe.setForeground(new Color(0, 27, 72));
 		lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
@@ -72,50 +86,6 @@ public class product extends JFrame implements ActionListener {
 		lblTieuDe.setBounds(304, -11, 850, 90);
 		getContentPane().add(lblTieuDe);
 
-//		JScrollPane scrollPane_1 = new JScrollPane();
-//		scrollPane_1.setBounds(20, 41, 1376, 106);
-//		panel_1_1.add(scrollPane_1);
-//
-//		tbl_BangSanPham = new JTable();
-//		TableColumnModel columnModel = tbl_BangSanPham.getColumnModel();
-//		columnModel.setColumnSelectionAllowed(false);
-//		columnModel.setColumnMargin(0);
-//		tbl_BangSanPham.getTableHeader().setReorderingAllowed(false);
-//		scrollPane_1.setViewportView(tbl_BangSanPham);
-//
-//		String[] colHeader = { "Mã Sản Phẩm", "Tên Sản Phảm", "Loại Sản Phẩm", "trạng Thái", "Giá bán | VND |" };
-//
-//		modelSanPham = new DefaultTableModel(colHeader, 0) {
-//			/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = 1L;
-//			boolean[] columnEditables = { false, false, false, false, false };
-//
-//			@Override
-//			public boolean isCellEditable(int row, int column) {
-//				return columnEditables[column];
-//			}
-//		};
-//
-//		tbl_BangSanPham.setModel(modelSanPham);
-//
-//		JTableHeader tb = tbl_BangSanPham.getTableHeader();
-//		tb.setBackground(new Color(151, 201, 219));
-//		tb.setFont(new Font("Tahoma", Font.BOLD, 16));
-//		int rowHeight = 30;
-//
-//		int rowMargin = 10;
-//		tbl_BangSanPham.setRowHeight(rowHeight);
-//		tbl_BangSanPham.setIntercellSpacing(new java.awt.Dimension(0, rowMargin));
-
-//		private String cdID;
-//		private String name;
-//		private int quantity;
-//		private double price;
-//		private boolean status;
-//		@jakarta.persistence.OneToMany(mappedBy = "cd")
-//		private Set<OrderDetail> od;
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -130,6 +100,7 @@ public class product extends JFrame implements ActionListener {
 		lblThongTinSanPham.setBounds(54, 11, 256, 25);
 		panel.add(lblThongTinSanPham);
 
+		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "S\u1EA3n Ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_1.setBackground(new Color(255, 255, 255));
@@ -185,53 +156,53 @@ public class product extends JFrame implements ActionListener {
 
 			comboBoxTrangThai.setSelectedIndex(0);
 			
-					JLabel lblTenSamPham = new JLabel("Tên Sản Phẩm");
-					lblTenSamPham.setBounds(20, 78, 133, 25);
-					panel_1.add(lblTenSamPham);
-					lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
-					
-							txtTenSanPham = new JTextField();
-							txtTenSanPham.setBounds(163, 80, 305, 25);
-							panel_1.add(txtTenSanPham);
-							txtTenSanPham.setEditable(false);
-							txtTenSanPham.setColumns(10);
-							
-							JButton btnThem = new JButton("New button");
-							btnThem.setBounds(10, 438, 110, 30);
-							panel_1.add(btnThem);
-							btnThem.setForeground(Color.WHITE);
-							btnThem.setFont(new Font("Tahoma", Font.BOLD, 12));
-							btnThem.setBackground(new Color(0, 128, 255));
-							btnThem.setText("Thêm");
-							
-							JButton btnSua = new JButton("New button");
-							btnSua.setBounds(257, 438, 110, 30);
-							panel_1.add(btnSua);
-							btnSua.setBackground(new Color(0, 128, 255));
-							btnSua.setForeground(Color.WHITE);
-							btnSua.setFont(new Font("Tahoma", Font.BOLD, 12));
-							btnSua.setText("Sửa thông tin");
-									
-							JButton btnXoaRong = new JButton("New button");
-							btnXoaRong.setBounds(389, 438, 110, 30);
-							panel_1.add(btnXoaRong);
-							btnXoaRong.setForeground(Color.WHITE);
-							btnXoaRong.setBackground(new Color(0, 128, 255));
-							btnXoaRong.setFont(new Font("Tahoma", Font.BOLD, 12));
-							btnXoaRong.setText("Xoá rỗng");
-											
-							JButton btnXoa = new JButton("Xoá");
-							btnXoa.setForeground(Color.WHITE);
-							btnXoa.setFont(new Font("Tahoma", Font.BOLD, 12));
-							btnXoa.setBackground(new Color(0, 128, 255));
-							btnXoa.setBounds(137, 438, 110, 30);
-							panel_1.add(btnXoa);
+						JLabel lblTenSamPham = new JLabel("Tên Sản Phẩm");
+						lblTenSamPham.setBounds(20, 78, 133, 25);
+						panel_1.add(lblTenSamPham);
+						lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
+						
+								txtTenSanPham = new JTextField();
+								txtTenSanPham.setBounds(163, 80, 305, 25);
+								panel_1.add(txtTenSanPham);
+								txtTenSanPham.setEditable(false);
+								txtTenSanPham.setColumns(10);
+								
+								JButton btnThem = new JButton("New button");
+								btnThem.setBounds(10, 438, 110, 30);
+								panel_1.add(btnThem);
+								btnThem.setForeground(Color.WHITE);
+								btnThem.setFont(new Font("Tahoma", Font.BOLD, 12));
+								btnThem.setBackground(new Color(0, 128, 255));
+								btnThem.setText("Thêm");
+								
+								JButton btnSua = new JButton("New button");
+								btnSua.setBounds(257, 438, 110, 30);
+								panel_1.add(btnSua);
+								btnSua.setBackground(new Color(0, 128, 255));
+								btnSua.setForeground(Color.WHITE);
+								btnSua.setFont(new Font("Tahoma", Font.BOLD, 12));
+								btnSua.setText("Sửa thông tin");
 										
-							btnXoa.addActionListener(this);
-							btnXoaRong.addActionListener(this);
-							btnSua.addActionListener(this);
-							btnThem.addActionListener(this);
-							
+								JButton btnXoaRong = new JButton("New button");
+								btnXoaRong.setBounds(389, 438, 110, 30);
+								panel_1.add(btnXoaRong);
+								btnXoaRong.setForeground(Color.WHITE);
+								btnXoaRong.setBackground(new Color(0, 128, 255));
+								btnXoaRong.setFont(new Font("Tahoma", Font.BOLD, 12));
+								btnXoaRong.setText("Xoá rỗng");
+												
+								JButton btnXoa = new JButton("Xoá");
+								btnXoa.setForeground(Color.WHITE);
+								btnXoa.setFont(new Font("Tahoma", Font.BOLD, 12));
+								btnXoa.setBackground(new Color(0, 128, 255));
+								btnXoa.setBounds(137, 438, 110, 30);
+								panel_1.add(btnXoa);
+											
+								btnXoa.addActionListener(this);
+								btnXoaRong.addActionListener(this);
+								btnSua.addActionListener(this);
+								btnThem.addActionListener(this);
+								
 		
 		JPanel panel_1_1 = new JPanel();
 		panel_1_1.setBounds(528, 47, 791, 595);
@@ -261,6 +232,12 @@ public class product extends JFrame implements ActionListener {
 		String[] col = {"Mã Sản Phẩm", "Tên sản phẩm", "Số Lượng", "Giá","Trạng Thái" };
 		modell = new DefaultTableModel(col, 0);
 		table_1.setModel(modell);
+		
+		JLabel lblUser = new JLabel("User");
+		lblUser.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUser.setBounds(942, 0, 283, 72);
+		contentPane.add(lblUser);
+		
 		
 		
 	}

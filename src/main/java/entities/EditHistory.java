@@ -15,7 +15,11 @@ import lombok.Getter;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @Table(name = "edit_histories")
-public class EditHistory {
+public class EditHistory implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2485122972982980544L;
 	@jakarta.persistence.Id
 	@Column(name = "edit_id")
 	private int id;

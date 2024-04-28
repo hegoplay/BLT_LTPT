@@ -6,6 +6,7 @@ import java.util.Set;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.ToString;
 
 @Entity
 @lombok.Getter
@@ -13,7 +14,12 @@ import jakarta.persistence.OneToMany;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @DiscriminatorValue("Customer")
-public class Customer extends Person{
+@ToString
+public class Customer extends Person implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6603037610178954819L;
 	@OneToMany(mappedBy = "customer")
 	private Set<Order> orders;
 	

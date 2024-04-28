@@ -1,6 +1,6 @@
 package run;
 
-import views.CustomerGui;
+import view.CustomerGui;
 
 public class CustomerViewDemo {
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package views;
+package view;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -137,6 +137,5 @@ public class CustomerGui extends JFrame implements ActionListener {
 
 		// Use CardLayout to switch between GUI panels based on the menu item clicked
 		cardLayout.show(cardPanel, command);
-		System.out.println(command + " selected");
 	}
 }

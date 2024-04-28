@@ -20,4 +20,9 @@ public class OrderDetail {
 	@jakarta.persistence.JoinColumn(name = "cd_id")
 	private CD cd;
 	private int quantity;
+	
+	// Subtotal computing method (Khang - 28/04/2024).
+	public double getSubTotal() {
+		return quantity * cd.getPrice();
+	}
 }

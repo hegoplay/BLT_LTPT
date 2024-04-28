@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.DiscriminatorValue;
@@ -15,5 +16,8 @@ import jakarta.persistence.OneToMany;
 public class Customer extends Person{
 	@OneToMany(mappedBy = "customer")
 	private Set<Order> orders;
+	
+	// cart property (Khang - 28/04/2024).
+	private List<CD> cart = null;
 	
 }

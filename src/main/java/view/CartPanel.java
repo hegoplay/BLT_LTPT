@@ -1,4 +1,4 @@
-package views;
+package view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,11 +17,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class CartPanel extends JPanel {
+public class CartPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
+	private JTextField textField_cdName;
 	private JTable table;
+	private JComboBox<String> comboBox_priceFilter;
+	private JButton btn_find;
+	private JButton btn_placeOrder;
 
 	/**
 	 * Create the panel.
@@ -34,16 +36,15 @@ public class CartPanel extends JPanel {
 		lblNewLabel.setBounds(124, 70, 70, 14);
 		add(lblNewLabel);
 
-		textField = new JTextField();
-		textField.setBounds(204, 67, 455, 20);
-		add(textField);
-		textField.setColumns(10);
+		textField_cdName = new JTextField();
+		textField_cdName.setBounds(204, 67, 455, 20);
+		add(textField_cdName);
+		textField_cdName.setColumns(10);
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(
-				new String[] { "Under 100,000", "100,000 - 200,000", "200,000 - 300,000", "Above 300,000" }));
-		comboBox.setBounds(799, 66, 116, 22);
-		add(comboBox);
+		comboBox_priceFilter = new JComboBox<String>();
+		comboBox_priceFilter.setModel(new DefaultComboBoxModel<String>(new String[] {"Ascending", "Descending"}));
+		comboBox_priceFilter.setBounds(799, 66, 116, 22);
+		add(comboBox_priceFilter);
 
 		JLabel lblNewLabel_1 = new JLabel("Filter by price");
 		lblNewLabel_1.setBounds(706, 70, 84, 14);
@@ -79,23 +80,41 @@ public class CartPanel extends JPanel {
 		lblNewLabel_2.setBounds(57, 114, 162, 14);
 		add(lblNewLabel_2);
 
-		JButton btnNewButton = new JButton("Find");
-		btnNewButton.addActionListener(new ActionListener() {
+		btn_find = new JButton("Find");
+		btn_find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNewButton.setBounds(266, 472, 143, 53);
-		add(btnNewButton);
+		btn_find.setBounds(266, 472, 143, 53);
+		add(btn_find);
 
-		JButton btnAddToCart = new JButton("Place order");
-		btnAddToCart.setBounds(594, 472, 143, 53);
-		add(btnAddToCart);
+		btn_placeOrder = new JButton("Place order");
+		btn_placeOrder.setBounds(594, 472, 143, 53);
+		add(btn_placeOrder);
 
 		JLabel lblNewLabel_3 = new JLabel("MY CART");
 		lblNewLabel_3.setBounds(489, 21, 70, 14);
 		add(lblNewLabel_3);
 		new JPanel();
 		setBorder(new EmptyBorder(50, 0, 50, 0));
+		
+		btn_find.addActionListener(this);
+		btn_placeOrder.addActionListener(this);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		String action = e.getActionCommand();
+		if (action.equals("Find")) {
+			String cdName = textField_cdName.getText();
+			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
+			System.out.println("Find button clicked");
+		} else if (action.equals("Place order")) {
+			// Get selected rows from the table.
+			
+			System.out.println("Place order button clicked");
+		}
 	}
 
 }

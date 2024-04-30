@@ -66,6 +66,11 @@ public class product extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		getContentPane().setLayout(null);
 
+		JLabel lblUser = new JLabel("User");
+		lblUser.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUser.setBounds(942, 0, 283, 72);
+		contentPane.add(lblUser);
+		
 		JMenuBar menuBar_1 = new JMenuBar();
         menuBar_1.setBounds(1221, 11, 80, 50);
         contentPane.add(menuBar_1);
@@ -233,10 +238,7 @@ public class product extends JFrame implements ActionListener {
 		modell = new DefaultTableModel(col, 0);
 		table_1.setModel(modell);
 		
-		JLabel lblUser = new JLabel("User");
-		lblUser.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUser.setBounds(942, 0, 283, 72);
-		contentPane.add(lblUser);
+		
 		
 		
 		

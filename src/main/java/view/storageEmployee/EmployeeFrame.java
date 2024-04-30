@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Insets;
+import javax.swing.ImageIcon;
 
 public class EmployeeFrame extends JFrame {
 
@@ -56,7 +57,7 @@ public class EmployeeFrame extends JFrame {
         
         
         JPanel panel = new JPanel();
-        panel.setBounds(10, 120, 200, 34); // Adjusted width
+        panel.setBounds(10, 32, 200, 34); // Adjusted width
         contentPane.add(panel);
         panel.setLayout(null);
 
@@ -65,7 +66,7 @@ public class EmployeeFrame extends JFrame {
         panel.add(menuBar);
 
         JMenu mnNewMenu = new JMenu("Tác Vụ");
-        mnNewMenu.setHorizontalAlignment(SwingConstants.CENTER);
+        mnNewMenu.setHorizontalAlignment(SwingConstants.RIGHT);
         menuBar.add(mnNewMenu);
         mnNewMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));  // Set max size
 
@@ -101,6 +102,11 @@ public class EmployeeFrame extends JFrame {
         lblUser.setHorizontalAlignment(SwingConstants.CENTER);
         lblUser.setBounds(0, 0, 283, 72);
         panel_1.add(lblUser);
+        
+        JLabel lblNewLabel_1 = new JLabel("New label");
+        lblNewLabel_1.setIcon(new ImageIcon("src/main/resources/img/61xSP8mYRUS.jpg"));
+        lblNewLabel_1.setBounds(10, 101, 1334, 621);
+        contentPane.add(lblNewLabel_1);
         
         // Set up action listeners
         mntmProduct.addActionListener(new ActionListener() {

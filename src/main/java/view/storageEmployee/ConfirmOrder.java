@@ -149,7 +149,7 @@ public class ConfirmOrder extends JFrame implements ActionListener{
 		btnThem.setForeground(Color.WHITE);
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnThem.setBackground(new Color(0, 128, 255));
-		btnThem.setText("Thêm");
+		btnThem.setText("Xác nhận Đơn");
 								
 		JButton btnSua = new JButton("New button");
 		btnSua.setBounds(358, 438, 110, 30);
@@ -157,9 +157,9 @@ public class ConfirmOrder extends JFrame implements ActionListener{
 		btnSua.setBackground(new Color(0, 128, 255));
 		btnSua.setForeground(Color.WHITE);
 		btnSua.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnSua.setText("Sửa thông tin");
+		btnSua.setText("Sửa Đơn");
 												
-								JButton btnXoa = new JButton("Xoá");
+								JButton btnXoa = new JButton("Xoá Đơn ");
 								btnXoa.setForeground(Color.WHITE);
 								btnXoa.setFont(new Font("Tahoma", Font.BOLD, 12));
 								btnXoa.setBackground(new Color(0, 128, 255));

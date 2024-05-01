@@ -13,7 +13,6 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Insets;
 import javax.swing.ImageIcon;
 
 public class EmployeeFrame extends JFrame {
@@ -57,21 +56,20 @@ public class EmployeeFrame extends JFrame {
         
         
         JPanel panel = new JPanel();
-        panel.setBounds(10, 32, 200, 34); // Adjusted width
+        panel.setBounds(10, 32, 200, 34); 
         contentPane.add(panel);
         panel.setLayout(null);
 
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBounds(0, 0, 200, 34); // Adjusted width to fill panel
+        menuBar.setBounds(0, 0, 200, 34); 
         panel.add(menuBar);
 
         JMenu mnNewMenu = new JMenu("Tác Vụ");
         mnNewMenu.setHorizontalAlignment(SwingConstants.RIGHT);
         menuBar.add(mnNewMenu);
-        mnNewMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));  // Set max size
+        mnNewMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));  
 
-
-        JMenuItem mntmProduct = new JMenuItem("Quản lý Sản Phẩm ");
+        JMenuItem mntmProduct = new JMenuItem("Quản lý Sản Phẩm");
         mnNewMenu.add(mntmProduct);
 
         JMenuItem mntmConfirmOrder = new JMenuItem("Xác Nhận Đơn");
@@ -111,19 +109,25 @@ public class EmployeeFrame extends JFrame {
         // Set up action listeners
         mntmProduct.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //updateStatus("Bạn đang xem chức năng Kiểm Kho.");
+                product pd = new product();
+                pd.setVisible(true);
+                dispose();
             }
         });
         
         mntmConfirmOrder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               // updateStatus("Bạn đang xem chức năng Đặt Hàng.");
+               ConfirmOrder co = new ConfirmOrder();
+               co.setVisible(true);
+               dispose();
             }
         });
 
         mntmReport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               // updateStatus("Bạn đang xem chức năng Báo Cáo.");
+               OrderBill ob = new OrderBill();
+               ob.setVisible(true);
+               dispose();
             }
         });
         

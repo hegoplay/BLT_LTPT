@@ -35,9 +35,10 @@ public class product extends JFrame implements ActionListener {
 	private JPanel contentPane;
 	private JTextField txtTenSanPham;
 	private JTextField txtSoLuong;
-	private JTextField txtPrice;
+	private JTextField txtPrice,txtmaCD;
 	private DefaultTableModel modell;
 	private JTable table_1;
+	private JButton btnXoaRong,btnXoa,btnSua,btnThem;
 	/**
 	 * Launch the application.
 	 */
@@ -118,7 +119,7 @@ public class product extends JFrame implements ActionListener {
 		lblmaCD.setBounds(20, 30, 133, 25);
 		panel_1.add(lblmaCD);
 
-		JTextField txtmaCD = new JTextField();
+		 txtmaCD = new JTextField();
 		txtmaCD.setBounds(163, 32, 307, 25);
 		txtmaCD.setEditable(false);
 		panel_1.add(txtmaCD);
@@ -159,56 +160,49 @@ public class product extends JFrame implements ActionListener {
 		comboBoxTrangThai.addItem("Không có hàng");
 		
 
-			comboBoxTrangThai.setSelectedIndex(0);
+		comboBoxTrangThai.setSelectedIndex(0);
 			
-						JLabel lblTenSamPham = new JLabel("Tên Sản Phẩm");
-						lblTenSamPham.setBounds(20, 78, 133, 25);
-						panel_1.add(lblTenSamPham);
-						lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
+		JLabel lblTenSamPham = new JLabel("Tên Sản Phẩm");
+		lblTenSamPham.setBounds(20, 78, 133, 25);
+		panel_1.add(lblTenSamPham);
+		lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
 						
-								txtTenSanPham = new JTextField();
-								txtTenSanPham.setBounds(163, 80, 305, 25);
-								panel_1.add(txtTenSanPham);
-								txtTenSanPham.setEditable(false);
-								txtTenSanPham.setColumns(10);
+		txtTenSanPham = new JTextField();
+		txtTenSanPham.setBounds(163, 80, 305, 25);
+		panel_1.add(txtTenSanPham);
+		txtTenSanPham.setEditable(false);
+		txtTenSanPham.setColumns(10);
 								
-								JButton btnThem = new JButton("New button");
-								btnThem.setBounds(10, 438, 110, 30);
-								panel_1.add(btnThem);
-								btnThem.setForeground(Color.WHITE);
-								btnThem.setFont(new Font("Tahoma", Font.BOLD, 12));
-								btnThem.setBackground(new Color(0, 128, 255));
-								btnThem.setText("Thêm");
+		btnThem = new JButton("Thêm");
+		btnThem.setBounds(10, 438, 110, 30);
+		panel_1.add(btnThem);
+		btnThem.setForeground(Color.WHITE);
+		btnThem.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnThem.setBackground(new Color(0, 128, 255));
+	
 								
-								JButton btnSua = new JButton("New button");
-								btnSua.setBounds(257, 438, 110, 30);
-								panel_1.add(btnSua);
-								btnSua.setBackground(new Color(0, 128, 255));
-								btnSua.setForeground(Color.WHITE);
-								btnSua.setFont(new Font("Tahoma", Font.BOLD, 12));
-								btnSua.setText("Sửa thông tin");
+		btnSua = new JButton("Sửa thông tin");
+		btnSua.setBounds(257, 438, 110, 30);
+		panel_1.add(btnSua);
+		btnSua.setBackground(new Color(0, 128, 255));
+		btnSua.setForeground(Color.WHITE);
+		btnSua.setFont(new Font("Tahoma", Font.BOLD, 12));
 										
-								JButton btnXoaRong = new JButton("New button");
-								btnXoaRong.setBounds(389, 438, 110, 30);
-								panel_1.add(btnXoaRong);
-								btnXoaRong.setForeground(Color.WHITE);
-								btnXoaRong.setBackground(new Color(0, 128, 255));
-								btnXoaRong.setFont(new Font("Tahoma", Font.BOLD, 12));
-								btnXoaRong.setText("Xoá rỗng");
+		btnXoaRong = new JButton("Xoá rỗng");
+		btnXoaRong.setBounds(389, 438, 110, 30);
+		panel_1.add(btnXoaRong);
+		btnXoaRong.setForeground(Color.WHITE);
+		btnXoaRong.setBackground(new Color(0, 128, 255));
+		btnXoaRong.setFont(new Font("Tahoma", Font.BOLD, 12));
+	
 												
-								JButton btnXoa = new JButton("Xoá");
-								btnXoa.setForeground(Color.WHITE);
-								btnXoa.setFont(new Font("Tahoma", Font.BOLD, 12));
-								btnXoa.setBackground(new Color(0, 128, 255));
-								btnXoa.setBounds(137, 438, 110, 30);
-								panel_1.add(btnXoa);
-											
-								btnXoa.addActionListener(this);
-								btnXoaRong.addActionListener(this);
-								btnSua.addActionListener(this);
-								btnThem.addActionListener(this);
-								
-		
+		btnXoa = new JButton("Xoá");
+		btnXoa.setForeground(Color.WHITE);
+		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnXoa.setBackground(new Color(0, 128, 255));
+		btnXoa.setBounds(137, 438, 110, 30);
+		panel_1.add(btnXoa);
+										
 		JPanel panel_1_1 = new JPanel();
 		panel_1_1.setBounds(528, 47, 791, 595);
 		panel.add(panel_1_1);
@@ -238,15 +232,30 @@ public class product extends JFrame implements ActionListener {
 		modell = new DefaultTableModel(col, 0);
 		table_1.setModel(modell);
 		
+		btnXoa.addActionListener(this);
+		btnXoaRong.addActionListener(this);	
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
 		
 		
-		
-		
+	
 	}
-
+	public void xoaRong() {
+		txtmaCD.setText("");
+		txtTenSanPham.setText("");
+		txtSoLuong.setText("");
+		txtTenSanPham.requestFocus();
+		txtPrice.setText(getName());
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		Object o = e.getSource();
+		if (o.equals(btnXoaRong)) {
+			xoaRong();
+		}
+		else if (o.equals(btnThem)) {
+			
+		}
 	}
 }

@@ -44,7 +44,7 @@ public static OrderDAO instance = new OrderDAO();
 	@Override
 	public Order findById(String id) {
 		// TODO Auto-generated method stub
-		return StorageManager.find(Order.class, id);
+		return null;
 	}
 
 	@Override

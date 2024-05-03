@@ -20,6 +20,8 @@ import java.io.File;
 import java.awt.event.InputEvent;
 import javax.swing.ImageIcon;
 import java.awt.CardLayout;
+import java.awt.Component;
+import javax.swing.Box;
 
 
 
@@ -38,9 +40,6 @@ public class ServerFrame extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	static void Test(int x) {
-		x++;
-	}
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -86,16 +85,20 @@ public class ServerFrame extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setBackground(Constant.BACKGROUND_COLOR);
 		
-
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setContentPane(contentPane);
+		SetContentPane();
+		
+	}
+
+	private void SetContentPane() {
 		contentPane.setLayout(new CardLayout(0, 0));
 		PnlQLND pnlQLND = new PnlQLND();
 		contentPane.add(pnlQLND, "QLND");
 		PnlServerLog pnlLog = new PnlServerLog();
 		contentPane.add(pnlLog, "LOG");
-		
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == mntmQLND) {

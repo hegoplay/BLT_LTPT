@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JButton;
@@ -26,6 +28,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import dao.ProductDAO;
+import entities.CD;
 import entities.OrderDetail;
 import javax.swing.border.TitledBorder;
 
@@ -237,8 +241,16 @@ public class product extends JFrame implements ActionListener {
 		btnSua.addActionListener(this);
 		btnThem.addActionListener(this);
 		
-		
+		loadData();
 	
+	}
+	
+	public void loadData() {
+		List<CD> cd = new ArrayList<>();
+		DefaultTableModel md = (DefaultTableModel) table_1.getModel();
+		for (CD sp : cd) {
+			md.addRow(new Object[] { sp.getCdID(), sp.getName(), sp.getQuantity(),sp.getPrice(),sp.isStatus() });
+		}
 	}
 	public void xoaRong() {
 		txtmaCD.setText("");
@@ -255,6 +267,7 @@ public class product extends JFrame implements ActionListener {
 			xoaRong();
 		}
 		else if (o.equals(btnThem)) {
+			//ProductDAO dsCD = new ProductDAO();
 			
 		}
 	}

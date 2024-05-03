@@ -176,37 +176,37 @@ public class ConfirmOrder extends JFrame implements ActionListener{
 								lbDiaCHi.setBounds(20, 319, 133, 25);
 								panel_1.add(lbDiaCHi);
 								
-								txtTenSP = new JTextField();
-								txtTenSP.setEditable(false);
-								txtTenSP.setColumns(10);
-								txtTenSP.setBounds(163, 129, 307, 25);
-								panel_1.add(txtTenSP);
+		txtTenSP = new JTextField();
+		txtTenSP.setEditable(false);
+		txtTenSP.setColumns(10);
+		txtTenSP.setBounds(163, 129, 307, 25);
+		panel_1.add(txtTenSP);
 								
-								txtDiaChi = new JTextField();
-								txtDiaChi.setEditable(false);
-								txtDiaChi.setColumns(10);
-								txtDiaChi.setBounds(163, 319, 307, 25);
-								panel_1.add(txtDiaChi);
+		txtDiaChi = new JTextField();
+		txtDiaChi.setEditable(false);
+		txtDiaChi.setColumns(10);
+		txtDiaChi.setBounds(163, 319, 307, 25);
+		panel_1.add(txtDiaChi);
 								
-								txtTongTien = new JTextField();
-								txtTongTien.setEditable(false);
-								txtTongTien.setColumns(10);
-								txtTongTien.setBounds(163, 180, 307, 25);
-								panel_1.add(txtTongTien);
+		txtTongTien = new JTextField();
+		txtTongTien.setEditable(false);
+		txtTongTien.setColumns(10);
+		txtTongTien.setBounds(163, 180, 307, 25);
+		panel_1.add(txtTongTien);
 								
 								
 								
-								JDateChooser dateChooser = new JDateChooser();
-								dateChooser.setBounds(163, 223, 307, 25);
-								panel_1.add(dateChooser);
+		JDateChooser dateChooser = new JDateChooser();
+		dateChooser.setBounds(163, 223, 307, 25);
+		panel_1.add(dateChooser);
 								
-								JDateChooser dateChooser_1 = new JDateChooser();
-								dateChooser_1.setBounds(161, 272, 307, 25);
-								panel_1.add(dateChooser_1);
+		JDateChooser dateChooser_1 = new JDateChooser();
+		dateChooser_1.setBounds(161, 272, 307, 25);
+		panel_1.add(dateChooser_1);
 											
-								btnXoa.addActionListener(this);
-								btnSua.addActionListener(this);
-								btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
 								
 		
 		JPanel panel_1_1 = new JPanel();

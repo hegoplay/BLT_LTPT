@@ -15,10 +15,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+
 public class EmployeeFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JPanel pnlBackground;
+	private JPanel pnlContent;
+	private JLabel lblTitle;
 
 	/**
 	 * Launch the application.
@@ -47,11 +53,11 @@ public class EmployeeFrame extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("NHÂN VIÊN TỒN KHO");
-        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 25));
-        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel.setBounds(10, 0, 1346, 99); // Adjusted width
-        contentPane.add(lblNewLabel);
+        lblTitle = new JLabel("NHÂN VIÊN TỒN KHO");
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 25));
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitle.setBounds(10, 0, 1346, 99); // Adjusted width
+        contentPane.add(lblTitle);
 
         
         
@@ -101,10 +107,25 @@ public class EmployeeFrame extends JFrame {
         lblUser.setBounds(0, 0, 283, 72);
         panel_1.add(lblUser);
         
-        JLabel lblNewLabel_1 = new JLabel("New label");
+        
+        
+        
+        
+        pnlContent = new JPanel();
+        pnlContent.setBounds(20, 112, 1320, 606);
+        contentPane.add(pnlContent);
+        pnlContent.setLayout(new CardLayout(0, 0));
+        
+        pnlBackground = new JPanel();
+        pnlBackground.setLayout(new BorderLayout(0, 0));
+        pnlContent.add(pnlBackground, "Pnl_Background");
+        
+        PnlOrderBill pnlOrderBill = new PnlOrderBill();
+        pnlContent.add(pnlOrderBill, "Pnl_OrderBill");
+        
+        JLabel lblNewLabel_1 = new JLabel("");
         lblNewLabel_1.setIcon(new ImageIcon("src/main/resources/img/61xSP8mYRUS.jpg"));
-        lblNewLabel_1.setBounds(10, 101, 1334, 621);
-        contentPane.add(lblNewLabel_1);
+        pnlBackground.add(lblNewLabel_1, BorderLayout.CENTER);
         
         // Set up action listeners
         mntmProduct.addActionListener(new ActionListener() {
@@ -117,9 +138,9 @@ public class EmployeeFrame extends JFrame {
         
         mntmConfirmOrder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               ConfirmOrder co = new ConfirmOrder();
-               co.setVisible(true);
-               dispose();
+            	CardLayout cardLayout = (CardLayout) pnlContent.getLayout();
+    			cardLayout.show(pnlContent, "Pnl_OrderBill");
+    			lblTitle.setText("XÁC NHẬN ĐƠN HÀNG");
             }
         });
 

@@ -23,7 +23,6 @@ public static ProductDAO instance = new ProductDAO();
 	public void insert(CD obj) {
 		// TODO Auto-generated method stub
 		StorageManager.getTransaction().begin();
-		StorageManager.persist(obj.getCdID());
 		StorageManager.persist(obj);
 		StorageManager.getTransaction().commit();
 		

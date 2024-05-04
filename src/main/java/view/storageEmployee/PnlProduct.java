@@ -42,21 +42,10 @@ public class PnlProduct extends JPanel implements ActionListener{
 	private DefaultTableModel modell;
 	private JTable table_1;
 	private JButton btnXoaRong,btnXoa,btnSua,btnThem;
+	private JComboBox<String> comboBoxTrangThai;
 	/**
 	 * Create the panel.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PnlProduct frame = new PnlProduct();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 	public PnlProduct() {
 		 this.setBounds(100, 100, 1339, 665);
 		 
@@ -68,7 +57,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(0, 0, 1339, 664);
+		panel.setBounds(10, 11, 1339, 664);
 		this.add(panel);
 		panel.setLayout(null);
 
@@ -92,8 +81,8 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1.add(lblmaCD);
 
 		 txtmaCD = new JTextField();
+		 txtmaCD.setText("cd01");
 		txtmaCD.setBounds(163, 32, 307, 25);
-		txtmaCD.setEditable(false);
 		panel_1.add(txtmaCD);
 		txtmaCD.setColumns(10);
 
@@ -109,13 +98,13 @@ public class PnlProduct extends JPanel implements ActionListener{
 
 		
 		txtSoLuong = new JTextField();
-		txtSoLuong.setEditable(false);
+		txtSoLuong.setText("100");
 		txtSoLuong.setColumns(10);
 		txtSoLuong.setBounds(163, 225, 307, 25);
 		panel_1.add(txtSoLuong);
 		
 		txtPrice = new JTextField();
-		txtPrice.setEditable(false);
+		txtPrice.setText("100000");
 		txtPrice.setColumns(10);
 		txtPrice.setBounds(163, 129, 307, 25);
 		panel_1.add(txtPrice);
@@ -125,7 +114,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1.add(lblTrangThai);
 		lblTrangThai.setFont(new Font("Tahoma", Font.BOLD, 15));
 		
-		JComboBox comboBoxTrangThai = new JComboBox<String>();
+		comboBoxTrangThai = new JComboBox<String>();
 		comboBoxTrangThai.setBounds(163, 178, 305, 25);
 		panel_1.add(comboBoxTrangThai);
 		comboBoxTrangThai.addItem("Có hàng");
@@ -140,9 +129,9 @@ public class PnlProduct extends JPanel implements ActionListener{
 		lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
 						
 		txtTenSanPham = new JTextField();
+		txtTenSanPham.setText("nghe nhac");
 		txtTenSanPham.setBounds(163, 80, 305, 25);
 		panel_1.add(txtTenSanPham);
-		txtTenSanPham.setEditable(false);
 		txtTenSanPham.setColumns(10);
 								
 		btnThem = new JButton("Thêm");
@@ -189,12 +178,12 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1_1.add(lbldanhSachSanPham);
 						
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(24, 46, 744, 527);
-		panel_1_1.add(scrollPane_1);
+		JScrollPane scrOrder = new JScrollPane();
+		scrOrder.setBounds(24, 46, 744, 527);
+		panel_1_1.add(scrOrder);
 						
 		table_1 = new JTable();
-		scrollPane_1.setViewportView(table_1);
+		scrOrder.setViewportView(table_1);
 		JTableHeader tb1 = table_1.getTableHeader();
 		tb1.setBackground(new Color(221, 242, 251));
 		tb1.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -234,8 +223,10 @@ public class PnlProduct extends JPanel implements ActionListener{
 	    newCD.setName(txtTenSanPham.getText());
 	    newCD.setPrice(Double.parseDouble(txtPrice.getText()));
 	    newCD.setQuantity(Integer.parseInt(txtSoLuong.getText()));
-	    newCD.setPrice(Double.parseDouble(txtSoLuong.getText()));
-
+//	    newCD.setPrice(Double.parseDouble(txtSoLuong.getText()));
+	    newCD.setStatus(comboBoxTrangThai.getSelectedIndex() == 0 ? true : false);
+	    newCD.setOd(null);
+	    System.out.println(newCD);
 	    ProductDAO.instance.insert(newCD); 
 	    refreshTableData(); 
 	}

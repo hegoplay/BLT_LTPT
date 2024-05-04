@@ -30,7 +30,6 @@ public static ProductDAO instance = new ProductDAO();
 
 	@Override
 	public void update(CD obj) {
-		// TODO Auto-generated method stub
 		StorageManager.getTransaction().begin();
 		StorageManager.merge(obj);
 		StorageManager.getTransaction().commit();

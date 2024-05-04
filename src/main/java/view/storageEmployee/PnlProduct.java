@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -230,12 +231,30 @@ public class PnlProduct extends JPanel implements ActionListener{
 	    ProductDAO.instance.insert(newCD); 
 	    refreshTableData(); 
 	}
+	private void xoaSp() {
+	    int selectedRow = table_1.getSelectedRow();
+	    if (selectedRow >= 0) {
+	        String cdID = (String) table_1.getModel().getValueAt(selectedRow, 0); // Assuming column 0 has the CD ID
+	        CD cd = ProductDAO.instance.findById(cdID);
+	        if (cd != null) {
+	            ProductDAO.instance.delete(cd); // Delete the CD from the database
+	            ((DefaultTableModel) table_1.getModel()).removeRow(selectedRow); // Remove the row from the table
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Khong tim thay san pham", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Chon san pham de xoa", "No selection", JOptionPane.WARNING_MESSAGE);
+	    }
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object o = e.getSource();
 		if(o.equals(btnThem)) {
 			themSp();
+		}
+		else if ( o.equals(btnXoa)) {
+			xoaSp();
 		}
 	}
 

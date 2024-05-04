@@ -73,7 +73,7 @@ public class MyProfilePanel extends JPanel {
 		textField_email.setBounds(287, 323, 540, 20);
 		add(textField_email);
 		
-		loadData();
+//		loadData();
 
 	}
 	

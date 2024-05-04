@@ -7,6 +7,11 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -17,6 +22,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import util.PersonType;
+
 import java.awt.BorderLayout;
 
 public class CustomerGui extends JFrame implements ActionListener {
@@ -34,30 +42,40 @@ public class CustomerGui extends JFrame implements ActionListener {
 	private JMenuItem menuItem_signOut;
 	private JMenuItem menuItem_mainPage;
 	
+	private Socket socket;
+	
 	private JPanel cardPanel;
 	private CardLayout cardLayout;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CustomerGui frame = new CustomerGui();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			private CustomerGui frame;
+//
+//			public void run() {
+//				try {
+//					frame = new CustomerGui();
+//					frame.setLocationRelativeTo(null);
+//					frame.setVisible(true);
+//					frame.connect2Server();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		
+//	}
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public CustomerGui() {
+	public CustomerGui() throws UnknownHostException, IOException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1080, 650);
 
@@ -127,7 +145,9 @@ public class CustomerGui extends JFrame implements ActionListener {
 	
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(50, 0, 50, 0));
-
+		
+		
+		
 	}
 	
 	@Override
@@ -137,5 +157,12 @@ public class CustomerGui extends JFrame implements ActionListener {
 
 		// Use CardLayout to switch between GUI panels based on the menu item clicked
 		cardLayout.show(cardPanel, command);
+	}
+	public void connect2Server() throws UnknownHostException, IOException {
+		socket = new Socket("localhost", 8603);
+		oos = new ObjectOutputStream(socket.getOutputStream());
+		ois = new ObjectInputStream(socket.getInputStream());
+//		oos.writeObject(PersonType.CUSTOMER);
+//		oos.flush();
 	}
 }

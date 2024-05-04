@@ -120,7 +120,7 @@ public class PnlServerLog extends JPanel implements ActionListener {
 							thread.start();
 						} catch (IOException e) {
 							textArea.append("Error when connect to client\n");
-							isRunning = false;
+//							isRunning = false;
 						}
 					}
 

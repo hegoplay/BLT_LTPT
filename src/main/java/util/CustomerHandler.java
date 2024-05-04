@@ -12,9 +12,11 @@ public class CustomerHandler implements Runnable {
 	private ObjectOutputStream oos;
 	
 	
-	public CustomerHandler(Socket socket) {
+	public CustomerHandler(Socket socket, ObjectInputStream ois, ObjectOutputStream oos) {
 		super();
 		this.socket = socket;
+		this.ois = ois;
+		this.oos = oos;
 	}
 
 
@@ -23,8 +25,16 @@ public class CustomerHandler implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			ois = new ObjectInputStream(socket.getInputStream());
-			oos = new ObjectOutputStream(socket.getOutputStream());
+			try {
+				String s = (String) ois.readObject();
+				System.out.println(s);
+				oos.writeObject(s);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

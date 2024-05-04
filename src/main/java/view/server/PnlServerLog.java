@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 import util.Constant;
 import util.CustomerHandler;
 import util.PersonType;
+import util.storageEvents.StorageEmployeeHandler;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -114,6 +115,9 @@ public class PnlServerLog extends JPanel implements ActionListener {
 							Runnable handler = null;
 							if (type == PersonType.CUSTOMER) {
 								handler = new CustomerHandler(accept,ois,oos);
+							}
+							else if (type == PersonType.STORAGE_EMPLOYEE) {
+								 handler = new StorageEmployeeHandler(accept,ois,oos);
 							}
 							Thread thread = new Thread(handler);
 							clients.add(thread);

@@ -1,4 +1,4 @@
-package util;
+package util.storageEvents;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,9 +12,11 @@ public class StorageEmployeeHandler implements Runnable {
 	private ObjectOutputStream oos;
 	
 	
-	public StorageEmployeeHandler(Socket socket) {
+	public StorageEmployeeHandler(Socket socket,ObjectInputStream ois,ObjectOutputStream oos) {
 		super();
 		this.socket = socket;
+		this.ois = ois;
+		this.oos = oos;
 	}
 
 
@@ -23,9 +25,11 @@ public class StorageEmployeeHandler implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			ois = new ObjectInputStream(socket.getInputStream());
-			oos = new ObjectOutputStream(socket.getOutputStream());
+			String message = (String) ois.readObject();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	

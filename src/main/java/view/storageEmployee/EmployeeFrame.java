@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import util.PersonType;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -13,6 +16,11 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javax.swing.ImageIcon;
 
 import java.awt.BorderLayout;
@@ -26,6 +34,11 @@ public class EmployeeFrame extends JFrame {
 	private JPanel pnlContent;
 	private JLabel lblTitle;
 
+	private int port = 8603;
+	private Socket socket;
+	private String serverAddress = "localhost";
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 	/**
 	 * Launch the application.
 	 */
@@ -45,7 +58,9 @@ public class EmployeeFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
 	public EmployeeFrame() {
+		connectServer();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1366, 768);
         contentPane = new JPanel();
@@ -123,7 +138,7 @@ public class EmployeeFrame extends JFrame {
         PnlOrderBill pnlOrderBill = new PnlOrderBill();
         pnlContent.add(pnlOrderBill, "Pnl_OrderBill");
 		
-        PnlConfirmOrder pnlConfirmOrder = new PnlConfirmOrder();
+        PnlConfirmOrder pnlConfirmOrder = new PnlConfirmOrder(socket, oos, ois);
         pnlContent.add(pnlConfirmOrder, "Pnl_ConfirmOrder");
         
         PnlProduct pnlProduct = new PnlProduct();
@@ -159,5 +174,30 @@ public class EmployeeFrame extends JFrame {
             }
         });
         
+	}
+	
+	private void connectServer() {
+		// TODO Auto-generated method stub
+		try {
+			socket = new Socket(serverAddress, port);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			oos.writeObject(PersonType.STORAGE_EMPLOYEE);
+			oos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void closeServer() {
+		// TODO Auto-generated method stub
+		try {
+			oos.close();
+			ois.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

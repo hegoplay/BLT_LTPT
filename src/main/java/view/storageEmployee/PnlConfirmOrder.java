@@ -5,7 +5,13 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,8 +36,15 @@ import com.toedter.calendar.JDateChooser;
 import component.OrderDetailTable;
 import component.OrderTable;
 import dao.OrderDAO;
+import dao.PersonDAO;
+import entities.Customer;
 import entities.Order;
+import entities.OrderDetail;
 import entities.OrderStatus;
+import entities.Person;
+import entities.StatiscalEmployee;
+import entities.StorageEmployee;
+import util.Constant;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -46,43 +59,53 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 	private JTable table_1;
 	private JTextField txtOrderId;
 	private JTextField txtNumber;
-	private JTextField txtRoad;
+	private JTextField txtStreet;
 	private JTextField txtCity;
 	private JTextField txtCustomer;
 	private JTextField txtTotal;
 	private OrderTable tblOrder;
 	private OrderDetailTable tblOD;
+	private JButton btnAccept;
+	private JButton btnReject;
+	private JDateChooser dateOrder;
 
+	private Socket socket;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
+	
 	/**
 	 * Launch the application.
 	 */
 	/**
 	 * Create the frame.
 	 */
-	public PnlConfirmOrder() {
+	public PnlConfirmOrder(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) {
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setBounds(100, 100, 1366, 768);
 //        contentPane = new JPanel();
+		this.socket = socket;
+		this.oos = oos;
+		this.ois = ois;
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 //        setContentPane(contentPane);
 		this.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 1334, 655);
+		panel.setBounds(10, 11, 1334, 587);
 		this.add(panel);
 		panel.setLayout(null);
 
 		JLabel lblNewLabel_1 = new JLabel("Thông Tin Đơn Hàng");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblNewLabel_1.setBounds(10, 11, 286, 40);
+		lblNewLabel_1.setBounds(756, 0, 286, 40);
 		panel.add(lblNewLabel_1);
 
 		JPanel pnlInfo = new JPanel();
 		pnlInfo.setBorder(
 				new TitledBorder(null, "S\u1EA3n Ph\u1EA9m", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlInfo.setBackground(new Color(255, 255, 255));
-		pnlInfo.setBounds(10, 47, 509, 543);
+		pnlInfo.setBounds(756, 33, 550, 543);
 		panel.add(pnlInfo);
 		GridBagLayout gbl_pnlInfo = new GridBagLayout();
 		gbl_pnlInfo.columnWidths = new int[] { 100, 0, 10 };
@@ -115,7 +138,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		gbc_lblCreatedDate.gridy = 1;
 		pnlInfo.add(lblCreatedDate, gbc_lblCreatedDate);
 
-		JDateChooser dateOrder = new JDateChooser();
+		dateOrder = new JDateChooser();
 		dateOrder.getCalendarButton().setEnabled(false);
 
 		GridBagConstraints gbc_dateOrder = new GridBagConstraints();
@@ -149,15 +172,15 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		gbc_lblRoad.gridy = 3;
 		pnlInfo.add(lblRoad, gbc_lblRoad);
 
-		txtRoad = new JTextField();
-		txtRoad.setEditable(false);
+		txtStreet = new JTextField();
+		txtStreet.setEditable(false);
 		GridBagConstraints gbc_txtRoad = new GridBagConstraints();
 		gbc_txtRoad.insets = new Insets(0, 0, 5, 0);
 		gbc_txtRoad.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtRoad.gridx = 2;
 		gbc_txtRoad.gridy = 3;
-		pnlInfo.add(txtRoad, gbc_txtRoad);
-		txtRoad.setColumns(10);
+		pnlInfo.add(txtStreet, gbc_txtRoad);
+		txtStreet.setColumns(10);
 
 		JLabel lblCity = new JLabel("Thành phố");
 		GridBagConstraints gbc_lblCity = new GridBagConstraints();
@@ -236,10 +259,10 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		gbc_lblOptions.gridy = 8;
 		pnlInfo.add(lblOptions, gbc_lblOptions);
 
-		JButton btnAccept = new JButton("Chấp nhận");
+		btnAccept = new JButton("Chấp nhận");
 		lblOptions.add(btnAccept);
 
-		JButton btnReject = new JButton("Hủy đơn");
+		btnReject = new JButton("Hủy đơn");
 		lblOptions.add(btnReject);
 
 //		btnXoa.addActionListener(this);
@@ -247,7 +270,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 //		btnThem.addActionListener(this);
 
 		JPanel panel_1_1 = new JPanel();
-		panel_1_1.setBounds(529, 47, 791, 543);
+		panel_1_1.setBounds(10, 11, 736, 565);
 		panel.add(panel_1_1);
 		panel_1_1.setBackground(Color.WHITE);
 		panel_1_1.setLayout(null);
@@ -260,7 +283,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		panel_1_1.add(lbldanhSachDonHang);
 
 		JScrollPane scrOrder = new JScrollPane();
-		scrOrder.setBounds(24, 46, 744, 486);
+		scrOrder.setBounds(24, 46, 698, 486);
 		panel_1_1.add(scrOrder);
 
 		tblOrder = new OrderTable();
@@ -274,7 +297,29 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 //				"Địa Chỉ" };
 //		modell = new DefaultTableModel(col, 0);
 //		table_1.setModel(modell);
+		
+		tblOrder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int row = tblOrder.getSelectedRow();
+				Order p = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
+				txtOrderId.setText(p.getOrderId());
+				dateOrder.setDate(Constant.convertToDateViaInstant(p.getCreatedDate()));
+				txtNumber.setText(p.getShippingAddress().getNumber());
+				txtStreet.setText(p.getShippingAddress().getStreet());
+				txtCity.setText(p.getShippingAddress().getCity());
+				txtCustomer.setText(p.getCustomer().getName());
+				Set<OrderDetail> list = OrderDAO.instance.getODSetByOrder(p);
+				p.setOrderDetails(list);
+				txtTotal.setText(String.valueOf(p.getTotal()));
+				tblOD.ReloadTable(list.stream().collect(Collectors.toList()));
+			}
+		});
+		
 		loadAllOrders();
+		
+		btnAccept.addActionListener(this);
+		btnReject.addActionListener(this);
 	}
 
 	private void loadAllOrders() {
@@ -288,6 +333,49 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnAccept)) {
+			acceptOrder();
+		} else if (o.equals(btnReject)) {
+			rejectOrder();
+		}
+	}
+	
+	private void rejectOrder() {
+		// TODO Auto-generated method stub
+		
+		int row = tblOrder.getSelectedRow();
+		if (row == -1) {
+			return;
+		}
+		Order order = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
+		order.setStatus(OrderStatus.REJECTED);
+		OrderDAO.instance.update(order);
+		loadAllOrders();
+		resetField();
+	}
 
+	private void acceptOrder() {
+		// TODO Auto-generated method stub
+		int row = tblOrder.getSelectedRow();
+		if (row == -1) {
+			return;
+		}
+		Order order = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
+		order.setStatus(OrderStatus.DELIVERING);
+		OrderDAO.instance.update(order);
+		loadAllOrders();
+		resetField();
+		
+	}
+
+	private void resetField() {
+		txtOrderId.setText("");
+		txtNumber.setText("");
+		txtStreet.setText("");
+		txtCity.setText("");
+		txtCustomer.setText("");
+		txtTotal.setText("");
+		dateOrder.setDate(null);
 	}
 }

@@ -11,6 +11,8 @@ import javax.swing.table.TableModel;
 
 import dao.PersonDAO;
 import entities.Customer;
+import entities.Order;
+import entities.OrderDetail;
 import entities.Person;
 import entities.StatiscalEmployee;
 import entities.StorageEmployee;
@@ -66,7 +68,20 @@ public class OrderDetailTable extends JTable {
 		this.setModel(model);
 		
 	}
-	
+	/**
+	 * This method is used to reload the table
+	 * need to update this to Socket method
+	 */
+	public void ReloadTable(List<OrderDetail> list) {
+		((DefaultTableModel) model).setRowCount(0);
+		
+		for (OrderDetail od : list) {
+			((DefaultTableModel) model)
+			.addRow(new Object[] { od.getCd().getCdID(), od.getCd().getName(), 
+					od.getQuantity(), od.getSubTotal() });
+		}
+	}
+
 
 	
 	

@@ -85,12 +85,12 @@ public class EmployeeFrame extends JFrame {
         mnNewMenu.add(mntmReport);
 
         JPanel panel_1 = new JPanel();
-        panel_1.setBounds(952, 11, 392, 72);
+        panel_1.setBounds(952, 11, 392, 55);
         contentPane.add(panel_1);
         panel_1.setLayout(null);
 
         JMenuBar menuBar_1 = new JMenuBar();
-        menuBar_1.setBounds(281, 11, 80, 50);
+        menuBar_1.setBounds(281, 11, 80, 40);
         panel_1.add(menuBar_1);
 
         JMenu quanLy = new JMenu("Người dùng");
@@ -112,7 +112,7 @@ public class EmployeeFrame extends JFrame {
         
         
         pnlContent = new JPanel();
-        pnlContent.setBounds(20, 112, 1320, 606);
+        pnlContent.setBounds(10, 77, 1320, 606);
         contentPane.add(pnlContent);
         pnlContent.setLayout(new CardLayout(0, 0));
         
@@ -122,6 +122,12 @@ public class EmployeeFrame extends JFrame {
         
         PnlOrderBill pnlOrderBill = new PnlOrderBill();
         pnlContent.add(pnlOrderBill, "Pnl_OrderBill");
+		
+        PnlConfirmOrder pnlConfirmOrder = new PnlConfirmOrder();
+        pnlContent.add(pnlConfirmOrder, "Pnl_ConfirmOrder");
+        
+        PnlProduct pnlProduct = new PnlProduct();
+        pnlContent.add(pnlProduct, "Pnl_Product");
         
         JLabel lblNewLabel_1 = new JLabel("");
         lblNewLabel_1.setIcon(new ImageIcon("src/main/resources/img/61xSP8mYRUS.jpg"));
@@ -130,25 +136,26 @@ public class EmployeeFrame extends JFrame {
         // Set up action listeners
         mntmProduct.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                product pd = new product();
-                pd.setVisible(true);
-                dispose();
+            	CardLayout cardLayout = (CardLayout) pnlContent.getLayout();
+    			cardLayout.show(pnlContent, "Pnl_Product");
+    			lblTitle.setText("SẢN PHẨM TỒN KHO");
+            	
             }
         });
         
         mntmConfirmOrder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	CardLayout cardLayout = (CardLayout) pnlContent.getLayout();
-    			cardLayout.show(pnlContent, "Pnl_OrderBill");
-    			lblTitle.setText("XÁC NHẬN ĐƠN HÀNG");
+    			cardLayout.show(pnlContent, "Pnl_ConfirmOrder");
+    			lblTitle.setText("Xác Nhận Đơn Hàng");
             }
         });
 
         mntmReport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               OrderBill ob = new OrderBill();
-               ob.setVisible(true);
-               dispose();
+            	CardLayout cardLayout = (CardLayout) pnlContent.getLayout();
+    			cardLayout.show(pnlContent, "Pnl_OrderBill");
+    			lblTitle.setText("IN HÓA ĐƠN");
             }
         });
         

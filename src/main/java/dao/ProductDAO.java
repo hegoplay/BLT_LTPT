@@ -7,7 +7,7 @@ import entities.CD;
 import entities.Person;
 import jakarta.persistence.EntityManager;
 import util.ConnectDB;
-import view.storageEmployee.product;
+import view.storageEmployee.PnlProduct;
 
 public class ProductDAO implements InterfaceDAO<CD> {
 

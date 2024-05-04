@@ -1,42 +1,41 @@
 package view.storageEmployee;
 
+import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import dao.ProductDAO;
 import entities.CD;
-import entities.OrderDetail;
-import javax.swing.border.TitledBorder;
 
-public class product extends JFrame implements ActionListener {
+public class PnlProduct extends JPanel implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JPanel pnlBackground;
+	private JPanel pnlContent;
+	private JLabel lblTitle;
 	private JTextField txtTenSanPham;
 	private JTextField txtSoLuong;
 	private JTextField txtPrice,txtmaCD;
@@ -44,13 +43,13 @@ public class product extends JFrame implements ActionListener {
 	private JTable table_1;
 	private JButton btnXoaRong,btnXoa,btnSua,btnThem;
 	/**
-	 * Launch the application.
+	 * Create the panel.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					product frame = new product();
+					PnlProduct frame = new PnlProduct();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,50 +57,19 @@ public class product extends JFrame implements ActionListener {
 			}
 		});
 	}
-
-	/**
-	 * Create the frame.
-	 */
-	public product() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1366, 768);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		getContentPane().setLayout(null);
-
-		JLabel lblUser = new JLabel("User");
-		lblUser.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUser.setBounds(942, 0, 283, 72);
-		contentPane.add(lblUser);
-		
-		JMenuBar menuBar_1 = new JMenuBar();
-        menuBar_1.setBounds(1221, 11, 80, 50);
-        contentPane.add(menuBar_1);
-
-        JMenu quanLy = new JMenu("Người dùng");
-        menuBar_1.add(quanLy);
-
-        JMenuItem info = new JMenuItem("Thông Tin");
-        quanLy.add(info);
-
-        JMenuItem thoat = new JMenuItem("Thoát");
-        quanLy.add(thoat);
-		
-		JLabel lblTieuDe = new JLabel("Sản Phẩm");
-		lblTieuDe.setForeground(new Color(0, 27, 72));
-		lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 40));
-		lblTieuDe.setBounds(304, -11, 850, 90);
-		getContentPane().add(lblTieuDe);
+	public PnlProduct() {
+		 this.setBounds(100, 100, 1339, 665);
+		 
+		this.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setLayout(null);
+	
 
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(15, 69, 1329, 653);
-		getContentPane().add(panel);
+		panel.setBounds(0, 0, 1339, 664);
+		this.add(panel);
 		panel.setLayout(null);
 
 		JLabel lblThongTinSanPham = new JLabel("Thông tin sản phẩm");
@@ -236,39 +204,48 @@ public class product extends JFrame implements ActionListener {
 		modell = new DefaultTableModel(col, 0);
 		table_1.setModel(modell);
 		
+		
+		
 		btnXoa.addActionListener(this);
 		btnXoaRong.addActionListener(this);	
 		btnSua.addActionListener(this);
 		btnThem.addActionListener(this);
-		
-		loadData();
-	
+
+		refreshTableData();
 	}
-	
-	public void loadData() {
+	public void themData() {
 		List<CD> cd = new ArrayList<>();
 		DefaultTableModel md = (DefaultTableModel) table_1.getModel();
 		for (CD sp : cd) {
 			md.addRow(new Object[] { sp.getCdID(), sp.getName(), sp.getQuantity(),sp.getPrice(),sp.isStatus() });
 		}
 	}
-	public void xoaRong() {
-		txtmaCD.setText("");
-		txtTenSanPham.setText("");
-		txtSoLuong.setText("");
-		txtTenSanPham.requestFocus();
-		txtPrice.setText(getName());
+	private void refreshTableData() {
+	    List<CD> cds = ProductDAO.instance.getAll();
+	    DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+	    model.setRowCount(0); 
+	    for (CD cd : cds) {
+	        model.addRow(new Object[]{cd.getCdID(), cd.getName(), cd.getQuantity(), cd.getPrice(), cd.isStatus()});
+	    }
+	}
+	private void themSp() {
+	    CD newCD = new CD();
+	    newCD.setCdID(txtmaCD.getText());
+	    newCD.setName(txtTenSanPham.getText());
+	    newCD.setPrice(Double.parseDouble(txtPrice.getText()));
+	    newCD.setQuantity(Integer.parseInt(txtSoLuong.getText()));
+	    newCD.setPrice(Double.parseDouble(txtSoLuong.getText()));
+
+	    ProductDAO.instance.insert(newCD); 
+	    refreshTableData(); 
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object o = e.getSource();
-		if (o.equals(btnXoaRong)) {
-			xoaRong();
-		}
-		else if (o.equals(btnThem)) {
-			//ProductDAO dsCD = new ProductDAO();
-			
+		if(o.equals(btnThem)) {
+			themSp();
 		}
 	}
+
 }

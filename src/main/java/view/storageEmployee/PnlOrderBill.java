@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -39,7 +40,7 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderBill frame = new OrderBill();
+					PnlOrderBill frame = new PnlOrderBill();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -53,11 +54,12 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 	 */
 	public PnlOrderBill() {
 		
-		this.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.setLayout(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "X\u00E1c Nh\u1EADn \u0110\u01A1n H\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBackground(new Color(255, 255, 255));
 		panel.setBounds(10, 15, 322, 707);
 		this.add(panel);
 		panel.setLayout(null);
@@ -111,7 +113,7 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 		panel.add(btnInHoaDon);
 		
 		JPanel panel_1 = new JPanel(new BorderLayout()); 
-	    panel_1.setBounds(339, 15, 1005, 707);
+	    panel_1.setBounds(350, 15, 960, 585);
 	    this.add(panel_1);
 	    
 	    JScrollPane scrollPane_1 = new JScrollPane();

@@ -1,4 +1,4 @@
-package view;
+package view.customer;
 
 import java.awt.Font;
 import java.awt.event.MouseEvent;
@@ -17,8 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import entities.Order;
 import entities.OrderDetail;
+import entities.OrderStatus;
 
 public class OrderPanel extends JPanel implements MouseListener {
 
@@ -44,8 +47,15 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel);
 
 		comboBox_orderStatus = new JComboBox<String>();
+		// Set order status for the combo box from OrderStatus enum.
+		OrderStatus[] statuses = OrderStatus.values();
+		String[] statusNames = new String[statuses.length];
+
+		for (int i = 0; i < statuses.length; i++) {
+		    statusNames[i] = statuses[i].toString();
+		}
 		comboBox_orderStatus
-				.setModel(new DefaultComboBoxModel(new String[] { "Pending", "Confirmed", "Delivering", "Delivered" }));
+				.setModel(new DefaultComboBoxModel(statusNames));
 		comboBox_orderStatus.setBounds(329, 63, 111, 22);
 		add(comboBox_orderStatus);
 
@@ -77,8 +87,9 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel_2);
 
 		textField_orderId = new JTextField();
+		textField_orderId.setEditable(false);
 		textField_orderId.setColumns(10);
-		textField_orderId.setBounds(625, 105, 190, 20);
+		textField_orderId.setBounds(625, 105, 400, 20);
 		add(textField_orderId);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -88,13 +99,26 @@ public class OrderPanel extends JPanel implements MouseListener {
 		orderDetailTable = new JTable();
 		scrollPane_1.setViewportView(orderDetailTable);
 		orderDetailTable.setModel(new DefaultTableModel(
-				new Object[][] { { null, null, null, null, null }, { null, null, null, null, null },
-						{ null, null, null, null, null }, },
-				new String[] { "CD id", "CD name", "Quantity", "Price", "Subtotal" }) {
-			Class[] columnTypes = new Class[] { Object.class, Object.class, Integer.class, Object.class, Double.class };
-
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"CD id", "CD name", "Quantity", "Price", "Subtotal"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Object.class, Object.class, Integer.class, Object.class, Double.class
+			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
 			}
 		});
 
@@ -103,8 +127,9 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel_3);
 
 		textField_total = new JTextField();
+		textField_total.setEditable(false);
 		textField_total.setColumns(10);
-		textField_total.setBounds(636, 368, 242, 20);
+		textField_total.setBounds(636, 368, 380, 20);
 		add(textField_total);
 
 		JLabel lblNewLabel_3_1 = new JLabel("Status :");
@@ -112,8 +137,9 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel_3_1);
 
 		textField_status = new JTextField();
+		textField_status.setEditable(false);
 		textField_status.setColumns(10);
-		textField_status.setBounds(636, 409, 242, 20);
+		textField_status.setBounds(636, 409, 384, 20);
 		add(textField_status);
 
 		JLabel lblNewLabel_3_2 = new JLabel("Shipped date :");
@@ -121,8 +147,9 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel_3_2);
 
 		textField_shippedDate = new JTextField();
+		textField_shippedDate.setEditable(false);
 		textField_shippedDate.setColumns(10);
-		textField_shippedDate.setBounds(640, 451, 238, 20);
+		textField_shippedDate.setBounds(640, 451, 380, 20);
 		add(textField_shippedDate);
 
 		JLabel lblNewLabel_3_3 = new JLabel("Address :");
@@ -130,6 +157,7 @@ public class OrderPanel extends JPanel implements MouseListener {
 		add(lblNewLabel_3_3);
 
 		textField_address = new JTextField();
+		textField_address.setEditable(false);
 		textField_address.setColumns(10);
 		textField_address.setBounds(640, 491, 380, 20);
 		add(textField_address);
@@ -139,7 +167,6 @@ public class OrderPanel extends JPanel implements MouseListener {
 		separator.setBounds(491, 40, 2, 507);
 		add(separator);
 
-		setOrderTableData();
 		orderTable.addMouseListener(this);
 		orderDetailTable.addMouseListener(this);
 	}
@@ -147,9 +174,10 @@ public class OrderPanel extends JPanel implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == orderTable) {
+			// Load the order detail data of the selected order.
 			int row = orderTable.getSelectedRow();
 			String orderId = orderTable.getValueAt(row, 0).toString();
-			setOrderDetailData(orderId);
+			loadOrderDetailData(orderId);
 		}
 	}
 
@@ -177,11 +205,14 @@ public class OrderPanel extends JPanel implements MouseListener {
 
 	}
 
-	public void setOrderTableData() {
+	public void loadOrderTableData() {
 		// Get all orders of the current customer. (There should be some mechanism to
 		// retrieve the current customer).
 		List<Order> result = new ArrayList<>();
+		
 		// DAO to get orders.
+		result = OrderDAO.instance.findByCustomerId(CustomerGui.customerID);
+		
 
 		DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
 		model.setRowCount(0);
@@ -190,11 +221,15 @@ public class OrderPanel extends JPanel implements MouseListener {
 		}
 	}
 
-	// Set order detail data for the provided orderId (including table and text
-	// fields).
-	public void setOrderDetailData(String orderId) {
+	/*
+	 * Set order detail data for the provided orderId
+	 *  (including table and text fields).
+	 * */ 
+	public void loadOrderDetailData(String orderId) {
 		List<OrderDetail> result = new ArrayList<>();
+		
 		// Use DAO to get order detail(s) of the provided orderId.
+		result = OrderDetailDAO.instance.findByOrderId(orderId);
 
 		DefaultTableModel model = (DefaultTableModel) orderDetailTable.getModel();
 		model.setRowCount(0);
@@ -204,16 +239,29 @@ public class OrderPanel extends JPanel implements MouseListener {
 		}
 
 		// Set total, status, shipped date, address.
-		Order order = new Order();
-		// Use DAO to get order with provided orderId.
+		Order order = OrderDAO.instance.findById(orderId);
 
 		double total = 0;
 		for (OrderDetail od : result) {
 			total += od.getSubTotal();
 		}
+		
+		textField_orderId.setText("");
+		textField_total.setText("");
+		textField_status.setText("");
+		textField_shippedDate.setText("");
+		textField_address.setText("");
+		
+		if (order.getShippedDate() != null) {
+			textField_shippedDate.setText(order.getShippedDate().toString());
+		}
+		else {
+			textField_shippedDate.setText("not yet shipped");
+		}
+		
+		textField_orderId.setText(orderId);
 		textField_total.setText(String.valueOf(total));
 		textField_status.setText(order.getStatus().toString());
-		textField_shippedDate.setText(order.getShippedDate().toString());
 		textField_address.setText(order.getShippingAddress().toString());
 	}
 

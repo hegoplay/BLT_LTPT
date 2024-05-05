@@ -1,21 +1,28 @@
-package view;
+package view.customer;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
+import dao.CdDAO;
+import entities.CD;
 
 public class CartPanel extends JPanel implements ActionListener {
 
@@ -25,6 +32,11 @@ public class CartPanel extends JPanel implements ActionListener {
 	private JComboBox<String> comboBox_priceFilter;
 	private JButton btn_find;
 	private JButton btn_placeOrder;
+	
+	// Khang (03/05/2024) : this variable is used to store the selected CDs from the table for order confirmation..
+	public static List<CD> orderCDs = new ArrayList<CD>();
+	// Khang (03/05/2024) : this is the temporary global variable to store the selected CDs for cart panel.
+	public static List<CD> cartCDs = new ArrayList<CD>();
 
 	/**
 	 * Create the panel.
@@ -58,21 +70,29 @@ public class CartPanel extends JPanel implements ActionListener {
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setModel(new DefaultTableModel(
-				new Object[][] { { null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null }, },
-				new String[] { "CD id", "CD name", "Price", "Status", "Quantity", "Select" }) {
-			Class[] columnTypes = new Class[] { Object.class, Object.class, Object.class, Object.class, Integer.class,
-					Boolean.class };
-
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"CD id", "CD name", "Price", "Status", "In stock quantity"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Object.class, Object.class, Object.class, Object.class, Integer.class
+			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
-		table.getColumnModel().getColumn(5).setResizable(false);
-		table.getColumnModel().getColumn(5).setPreferredWidth(65);
 		scrollPane.setViewportView(table);
 
 		JLabel lblNewLabel_2 = new JLabel("MY SELECTED CDs");
@@ -100,6 +120,7 @@ public class CartPanel extends JPanel implements ActionListener {
 		
 		btn_find.addActionListener(this);
 		btn_placeOrder.addActionListener(this);
+		
 	}
 
 	@Override
@@ -109,12 +130,46 @@ public class CartPanel extends JPanel implements ActionListener {
 		if (action.equals("Find")) {
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
-			System.out.println("Find button clicked");
+			loadCartData(CdDAO.instance.findByNameAndPrice(cdName, priceFilter));
 		} else if (action.equals("Place order")) {
 			// Get selected rows from the table.
+			orderCDs = getSelectedCDs();
 			
-			System.out.println("Place order button clicked");
+			// prompt the user with the order confirmation panel.
+		    JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		    
+		    OrderConfirmationDialog orderConfirmationDialog = new OrderConfirmationDialog(parentFrame);
+		    orderConfirmationDialog.loadTableData(orderCDs);
+		    orderConfirmationDialog.setVisible(true);
+		    orderConfirmationDialog.setLocationRelativeTo(null);
+
+		    loadCartData(cartCDs);
 		}
 	}
 
+	// Load the selected CDs to the Cart table.
+	public void loadCartData(List<CD> cds) {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0);
+		
+		// Retrieve the selected CDs from the selectedCDs list in CustomerGui and add them to the table.
+		cds.forEach((cd) -> {
+			model.addRow(new Object[] { cd.getCdID(), cd.getName(), cd.getPrice(), cd.isStatus(), cd.getQuantity(), false });
+		});
+	}
+	
+	// Method to retrieve the selected CDs from the cart table.
+	public List<CD> getSelectedCDs() {
+		List<CD> selectedCDs = new ArrayList<>();
+		
+		int[] selectedRows = table.getSelectedRows();
+		
+		for (int i = 0; i < selectedRows.length; i++) {
+			int selectedRow = selectedRows[i];
+			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
+			CD selectedCD = CdDAO.instance.findById(selectedCdID);
+			selectedCDs.add(selectedCD);
+		}
+		return selectedCDs;
+	}
 }

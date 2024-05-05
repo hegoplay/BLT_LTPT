@@ -1,4 +1,4 @@
-package view;
+package view.customer;
 
 import entities.CD;
 
@@ -7,6 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
+import dao.CdDAO;
+
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -48,7 +51,7 @@ public class findPanel extends JPanel implements ActionListener {
 		add(textField_cdName);
 
 		comboBox_priceFilter = new JComboBox<String>();
-		comboBox_priceFilter.setModel(new DefaultComboBoxModel<String>(new String[] {"Ascending", "Descending"}));
+		comboBox_priceFilter.setModel(new DefaultComboBoxModel<String>(new String[] { "Ascending", "Descending" }));
 		comboBox_priceFilter.setBounds(800, 74, 116, 22);
 		this.add(comboBox_priceFilter);
 
@@ -88,7 +91,7 @@ public class findPanel extends JPanel implements ActionListener {
 		JLabel lblNewLabel_3 = new JLabel("FIND CDs");
 		lblNewLabel_3.setBounds(503, 29, 70, 14);
 		add(lblNewLabel_3);
-		
+
 		btn_find.addActionListener(this);
 		btn_addToCart.addActionListener(this);
 	}
@@ -97,28 +100,17 @@ public class findPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		if (command.equals("Find")) {
-			System.out.println("Find button clicked");
-			
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
-			setTableData(getFoundCDs(cdName, priceFilter));
-			
+			// Call the method to set data for the table.
+			setTableData(CdDAO.instance.findByNameAndPrice(cdName, priceFilter));
+
 		} else if (command.equals("Add to cart")) {
-			
-			System.out.println("Add to cart button clicked");
+			// Call the method to get and store selected CDs
+			getAndStoreSelectedCDs();	
 		}
 	}
-	
-	
-	// (Need to be implemented) Method to get list of CDs with provided CD name and price criterion. 
-	public List<CD> getFoundCDs(String cdName, String priceFilter) {
-		List<CD> result = new ArrayList<>();
-		
-		// Use ProductDAO to get result.
-		
-		return result;
-	}
-	
+
 	// Method to set data for the table.
 	public void setTableData(List<CD> cds) {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -128,4 +120,22 @@ public class findPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	// Method to retrieve selected CDs from the table and store it into the temporary varibale selectedCDs in CustomerGui.
+	public void getAndStoreSelectedCDs() {
+		// Get the selected rows from the table
+		int[] selectedRows = table.getSelectedRows();
+		// Loop through the selected rows
+		for (int i = 0; i < selectedRows.length; i++) {
+			// Get the selected row
+			int selectedRow = selectedRows[i];
+
+			// Get the selected CD id from the selected row
+			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
+
+			// Add the selected CD to the selectedCDs list
+			CD selectedCD = CdDAO.instance.findById(selectedCdID);
+
+			CartPanel.cartCDs.add(selectedCD);
+		}
+	}
 }

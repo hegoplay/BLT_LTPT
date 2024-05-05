@@ -1,5 +1,6 @@
-package view;
+package view.customer;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,6 +8,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -17,7 +20,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
+
+import dao.PersonDAO;
+import entities.Account;
+import entities.Address;
+import entities.Customer;
+import entities.Order;
+import entities.Person;
 
 public class CustomerGui extends JFrame implements ActionListener {
 
@@ -36,7 +45,15 @@ public class CustomerGui extends JFrame implements ActionListener {
 	
 	private JPanel cardPanel;
 	private CardLayout cardLayout;
-
+	private mainPanel mainPanel;
+	private findPanel findPanel;
+	private CartPanel cartPanel;
+	private MyProfilePanel myProfilePanel;
+	private OrderPanel myOrdersPanel;
+	
+	// This temporary variable represents the current logged in user.
+	public static final String customerID = "khmk8123";
+	
 	/**
 	 * Launch the application.
 	 */
@@ -89,8 +106,10 @@ public class CustomerGui extends JFrame implements ActionListener {
 
 		// Add some rigid space to align Shopping to the right
 		menuBar_main.add(Box.createRigidArea(new Dimension(732, 12)));
+		
+		Customer customer = (Customer) PersonDAO.instance.findById(customerID);
 
-		menu_helloUser = new JMenu("Hello <user_name> !");
+		menu_helloUser = new JMenu("Hello " + customer.getName() + " !");
 		menu_helloUser.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		menu_helloUser.setForeground(new Color(0, 128, 192));
 		menu_helloUser.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -113,11 +132,17 @@ public class CustomerGui extends JFrame implements ActionListener {
 		cardPanel = new JPanel(cardLayout);
 		getContentPane().add(cardPanel);
 		
-		cardPanel.add(new mainPanel(), "Main Page");
-		cardPanel.add(new findPanel(), "Find CDs");
-		cardPanel.add(new CartPanel(), "My Cart");
-		cardPanel.add(new OrderPanel(), "My Orders");
-		cardPanel.add(new MyProfilePanel(), "My profile");
+		mainPanel = new mainPanel();
+		findPanel = new findPanel();
+		cartPanel = new CartPanel();
+		myProfilePanel = new MyProfilePanel();
+		myOrdersPanel = new OrderPanel();
+		
+		cardPanel.add(mainPanel, "Main Page");
+		cardPanel.add(findPanel, "Find CDs");
+		cardPanel.add(cartPanel, "My Cart");
+		cardPanel.add(myOrdersPanel, "My Orders");
+		cardPanel.add(myProfilePanel, "My profile");
 		
 		menuItem_mainPage.addActionListener(this);
 		menuItem_findCDs.addActionListener(this);
@@ -137,5 +162,17 @@ public class CustomerGui extends JFrame implements ActionListener {
 
 		// Use CardLayout to switch between GUI panels based on the menu item clicked
 		cardLayout.show(cardPanel, command);
+		
+		if (command.equals("My Cart")) {
+			// Load the selected CDs to the Cart table.
+			this.cartPanel.loadCartData(CartPanel.cartCDs);
+		}
+		else if (command.equals("My Orders")) {
+			// Load the orders of the logged in customer.
+			this.myOrdersPanel.loadOrderTableData();
+		} else if (command.equals("My profile")) {
+			// Load the profile of the logged in customer.
+			this.myProfilePanel.loadProfileData();
+		}
 	}
 }

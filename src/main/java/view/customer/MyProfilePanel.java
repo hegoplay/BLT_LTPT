@@ -1,12 +1,13 @@
-package view;
+package view.customer;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import java.awt.Font;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import dao.PersonDAO;
 import entities.Customer;
-import entities.Person;
 
 public class MyProfilePanel extends JPanel {
 
@@ -33,6 +34,7 @@ public class MyProfilePanel extends JPanel {
 		add(lblNewLabel_1);
 		
 		textField_userId = new JTextField();
+		textField_userId.setEditable(false);
 		textField_userId.setBounds(287, 120, 540, 20);
 		add(textField_userId);
 		textField_userId.setColumns(10);
@@ -42,6 +44,7 @@ public class MyProfilePanel extends JPanel {
 		add(lblNewLabel_1_1);
 		
 		textField_name = new JTextField();
+		textField_name.setEditable(false);
 		textField_name.setColumns(10);
 		textField_name.setBounds(287, 164, 540, 20);
 		add(textField_name);
@@ -51,6 +54,7 @@ public class MyProfilePanel extends JPanel {
 		add(lblNewLabel_1_2);
 		
 		textField_dob = new JTextField();
+		textField_dob.setEditable(false);
 		textField_dob.setColumns(10);
 		textField_dob.setBounds(287, 220, 540, 20);
 		add(textField_dob);
@@ -60,6 +64,7 @@ public class MyProfilePanel extends JPanel {
 		add(lblNewLabel_1_3);
 		
 		textField_address = new JTextField();
+		textField_address.setEditable(false);
 		textField_address.setColumns(10);
 		textField_address.setBounds(287, 274, 540, 20);
 		add(textField_address);
@@ -69,22 +74,24 @@ public class MyProfilePanel extends JPanel {
 		add(lblNewLabel_1_4);
 		
 		textField_email = new JTextField();
+		textField_email.setEditable(false);
 		textField_email.setColumns(10);
 		textField_email.setBounds(287, 323, 540, 20);
 		add(textField_email);
 		
-		loadData();
+//		loadData();
 
 	}
 	
-	public void loadData() {
+	public void loadProfileData() {
 		// Load user data to text fields.
-		Customer customer = new Customer();
 		// Use DAO to get user data from database.
+		Customer customer = (Customer) PersonDAO.instance.findById(CustomerGui.customerID);
 		
 		textField_userId.setText(customer.getPersonID());
 		textField_name.setText(customer.getName());
 		textField_dob.setText(customer.getDob().toString());
 		textField_address.setText(customer.getAddress().toString());
+		textField_email.setText(customer.getEmail());
 	}
 }

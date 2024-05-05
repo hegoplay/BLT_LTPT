@@ -1,5 +1,6 @@
 package entities;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,10 @@ public class Customer extends Person implements java.io.Serializable{
 	@OneToMany(mappedBy = "customer")
 	private Set<Order> orders;
 	
-	// cart property (Khang - 28/04/2024).
-	private List<CD> cart = null;
 	
+	public Customer(String personID, String name, LocalDate dob, Address address, String email, Account account,
+			LocalDate registDate, Set<Order> orders) {
+		super(personID, name, dob, address, email, account, registDate);
+		this.orders = orders;
+	}
 }

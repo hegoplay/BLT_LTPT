@@ -29,13 +29,4 @@ public class CD implements Serializable{
 	private boolean status;
 	@jakarta.persistence.OneToMany(mappedBy = "cd")
 	private Set<OrderDetail> od;
-	
-	// Constructor without order details property (Khang - 28/04/2024).
-	public CD(String cdID, String name, int quantity, double price, boolean status) {
-		this.cdID = cdID;
-		this.name = name;
-		this.quantity = quantity;
-		this.price = price;
-		this.status = status;
-	}
 }

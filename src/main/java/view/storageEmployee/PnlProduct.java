@@ -43,10 +43,22 @@ public class PnlProduct extends JPanel implements ActionListener{
 	private DefaultTableModel modell;
 	private JTable table_1;
 	private JButton btnXoaRong,btnXoa,btnSua,btnThem;
-	private JComboBox<String> comboBoxTrangThai;
+	JComboBox comboBoxTrangThai;
 	/**
 	 * Create the panel.
 	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					PnlProduct frame = new PnlProduct();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	public PnlProduct() {
 		 this.setBounds(100, 100, 1339, 665);
 		 
@@ -58,7 +70,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(10, 11, 1339, 664);
+		panel.setBounds(0, 0, 1339, 664);
 		this.add(panel);
 		panel.setLayout(null);
 
@@ -82,8 +94,8 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1.add(lblmaCD);
 
 		 txtmaCD = new JTextField();
-		 txtmaCD.setText("cd01");
 		txtmaCD.setBounds(163, 32, 307, 25);
+		
 		panel_1.add(txtmaCD);
 		txtmaCD.setColumns(10);
 
@@ -99,13 +111,13 @@ public class PnlProduct extends JPanel implements ActionListener{
 
 		
 		txtSoLuong = new JTextField();
-		txtSoLuong.setText("100");
+		
 		txtSoLuong.setColumns(10);
 		txtSoLuong.setBounds(163, 225, 307, 25);
 		panel_1.add(txtSoLuong);
 		
 		txtPrice = new JTextField();
-		txtPrice.setText("100000");
+		
 		txtPrice.setColumns(10);
 		txtPrice.setBounds(163, 129, 307, 25);
 		panel_1.add(txtPrice);
@@ -115,7 +127,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1.add(lblTrangThai);
 		lblTrangThai.setFont(new Font("Tahoma", Font.BOLD, 15));
 		
-		comboBoxTrangThai = new JComboBox<String>();
+		JComboBox comboBoxTrangThai = new JComboBox<String>();
 		comboBoxTrangThai.setBounds(163, 178, 305, 25);
 		panel_1.add(comboBoxTrangThai);
 		comboBoxTrangThai.addItem("Có hàng");
@@ -130,9 +142,9 @@ public class PnlProduct extends JPanel implements ActionListener{
 		lblTenSamPham.setFont(new Font("Tahoma", Font.BOLD, 15));
 						
 		txtTenSanPham = new JTextField();
-		txtTenSanPham.setText("nghe nhac");
 		txtTenSanPham.setBounds(163, 80, 305, 25);
 		panel_1.add(txtTenSanPham);
+	
 		txtTenSanPham.setColumns(10);
 								
 		btnThem = new JButton("Thêm");
@@ -179,12 +191,12 @@ public class PnlProduct extends JPanel implements ActionListener{
 		panel_1_1.add(lbldanhSachSanPham);
 						
 
-		JScrollPane scrOrder = new JScrollPane();
-		scrOrder.setBounds(24, 46, 744, 527);
-		panel_1_1.add(scrOrder);
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(24, 46, 744, 527);
+		panel_1_1.add(scrollPane_1);
 						
 		table_1 = new JTable();
-		scrOrder.setViewportView(table_1);
+		scrollPane_1.setViewportView(table_1);
 		JTableHeader tb1 = table_1.getTableHeader();
 		tb1.setBackground(new Color(221, 242, 251));
 		tb1.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -215,7 +227,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 	    DefaultTableModel model = (DefaultTableModel) table_1.getModel();
 	    model.setRowCount(0); 
 	    for (CD cd : cds) {
-	        model.addRow(new Object[]{cd.getCdID(), cd.getName(), cd.getQuantity(), cd.getPrice(), cd.isStatus()});
+	        model.addRow(new Object[]{cd.getCdID(), cd.getName(), cd.getQuantity(), cd.getPrice(), cd.isStatus() ? "Có hàng" : "Không có hàng" });
 	    }
 	}
 	private void themSp() {
@@ -223,22 +235,20 @@ public class PnlProduct extends JPanel implements ActionListener{
 	    newCD.setCdID(txtmaCD.getText());
 	    newCD.setName(txtTenSanPham.getText());
 	    newCD.setPrice(Double.parseDouble(txtPrice.getText()));
+	    boolean status = comboBoxTrangThai.getSelectedIndex() == 0; // Assuming 0 is "Có hàng"
+	    newCD.setStatus(status);
 	    newCD.setQuantity(Integer.parseInt(txtSoLuong.getText()));
-//	    newCD.setPrice(Double.parseDouble(txtSoLuong.getText()));
-	    newCD.setStatus(comboBoxTrangThai.getSelectedIndex() == 0 ? true : false);
-	    newCD.setOd(null);
-	    System.out.println(newCD);
 	    ProductDAO.instance.insert(newCD); 
 	    refreshTableData(); 
 	}
 	private void xoaSp() {
 	    int selectedRow = table_1.getSelectedRow();
 	    if (selectedRow >= 0) {
-	        String cdID = (String) table_1.getModel().getValueAt(selectedRow, 0); // Assuming column 0 has the CD ID
+	        String cdID = (String) table_1.getModel().getValueAt(selectedRow, 0); 
 	        CD cd = ProductDAO.instance.findById(cdID);
 	        if (cd != null) {
-	            ProductDAO.instance.delete(cd); // Delete the CD from the database
-	            ((DefaultTableModel) table_1.getModel()).removeRow(selectedRow); // Remove the row from the table
+	            ProductDAO.instance.delete(cd);
+	            ((DefaultTableModel) table_1.getModel()).removeRow(selectedRow); 
 	        } else {
 	            JOptionPane.showMessageDialog(this, "Khong tim thay san pham", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
@@ -246,6 +256,39 @@ public class PnlProduct extends JPanel implements ActionListener{
 	        JOptionPane.showMessageDialog(this, "Chon san pham de xoa", "No selection", JOptionPane.WARNING_MESSAGE);
 	    }
 	}
+	private void suaSp() {
+	    int selectedRow = table_1.getSelectedRow();
+	    if (selectedRow >= 0) {
+	        String cdID = txtmaCD.getText();  
+	        CD suaCD = ProductDAO.instance.findById(cdID);
+	        if (suaCD != null) {
+	        	suaCD.setCdID(txtmaCD.getText());
+	        	suaCD.setName(txtTenSanPham.getText());
+	        	suaCD.setPrice(Double.parseDouble(txtPrice.getText()));
+	            boolean status = comboBoxTrangThai.getSelectedIndex() == 0;  
+	            suaCD.setStatus(status);  
+	            suaCD.setQuantity(Integer.parseInt(txtSoLuong.getText()));
+	            ProductDAO.instance.update(suaCD);
+	            refreshTableData();  
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Loi", "Update Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Chon san pham de sua", "No selection", JOptionPane.WARNING_MESSAGE);
+	    }
+	}
+	private void xoaRong() {
+	    txtmaCD.setText("");
+	    txtTenSanPham.setText("");
+	    txtPrice.setText("");
+	    txtSoLuong.setText("");
+	    comboBoxTrangThai.setSelectedIndex(0);
+
+	    // Example: Disable the update button if it should not be usable when fields are empty
+	    btnSua.setEnabled(false);
+	    // Similarly, you might enable it elsewhere when fields are filled
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -255,6 +298,12 @@ public class PnlProduct extends JPanel implements ActionListener{
 		}
 		else if ( o.equals(btnXoa)) {
 			xoaSp();
+		}
+		else if ( o.equals(btnSua)) {
+			suaSp();
+		}
+		else if (o.equals(btnXoaRong)){
+			xoaRong();
 		}
 	}
 

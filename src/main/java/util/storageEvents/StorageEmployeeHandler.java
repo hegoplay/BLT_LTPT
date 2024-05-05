@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import dao.OrderDAO;
+import dao.PersonDAO;
 import entities.Order;
 import entities.OrderDetail;
 import entities.OrderStatus;
+import entities.StorageEmployee;
 
 public class StorageEmployeeHandler implements Runnable {
 
@@ -20,12 +22,14 @@ public class StorageEmployeeHandler implements Runnable {
 	private ObjectOutputStream oos;
 	private Set<OrderDetail> odSet;
 	
+	private StorageEmployee storageEmployee;
 	
 	public StorageEmployeeHandler(Socket socket,ObjectInputStream ois,ObjectOutputStream oos) {
 		super();
 		this.socket = socket;
 		this.ois = ois;
 		this.oos = oos;
+		storageEmployee = (StorageEmployee) PersonDAO.instance.findById("NVKHLVL451938");
 	}
 
 
@@ -33,6 +37,7 @@ public class StorageEmployeeHandler implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		
 		try {
 			while(true) {
 				Object obj = ois.readObject();
@@ -87,7 +92,9 @@ public class StorageEmployeeHandler implements Runnable {
 					obj = ois.readObject();
 					if (obj instanceof Order	) {
 						Order o = (Order) obj;
-						
+						if (o.getStatus() == OrderStatus.DELIVERING) {
+							o.setStorageEmployee(storageEmployee);
+						}
 						OrderDAO.instance.update(o);
 					}
 				}

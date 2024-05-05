@@ -1,13 +1,19 @@
 package component;
 
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import dao.PersonDAO;
 import entities.Customer;
@@ -39,6 +45,7 @@ public class PersonTable extends JTable {
 	type = 4;
 	
 	private TableModel model;
+	private TableRowSorter<DefaultTableModel> sorter;
 	
 	public PersonTable() {
 		model = new DefaultTableModel(COLUMN_NAMES, 0) {
@@ -59,6 +66,9 @@ public class PersonTable extends JTable {
 			}
 		};
 		this.setModel(model);
+		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(this.type, SortOrder.ASCENDING));
 		
 	}
 	@Override
@@ -98,6 +108,21 @@ public class PersonTable extends JTable {
 			}
 			
 		}
+		if(id == null || id.equals("") && type != null && type != PersonType.NONE) {
+			for (int i = 0; i < model.getRowCount(); i++) {
+				if (model.getValueAt(i, this.type).equals(type.getValue())) {
+					for (int j = i+1; j < model.getRowCount(); j++) {
+						if (!model.getValueAt(j, this.type).equals(type.getValue())) {
+							this.setRowSelectionInterval(i, j-1);
+							return;
+						}
+					}
+					this.setRowSelectionInterval(i, model.getRowCount()-1);
+					return;
+				}
+			}
+		}
+			
 		else {
 			for (int i = 0; i < model.getRowCount(); i++) {
 				if (model.getValueAt(i, this.id).equals(id) && model.getValueAt(i,this.type).equals(type.toString())) {

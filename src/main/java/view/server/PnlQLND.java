@@ -594,7 +594,7 @@ public class PnlQLND extends JPanel implements ActionListener {
 			personId += Character.toUpperCase(s.charAt(0));
 		}
 		
-		personId += Constant.convertToLocalDateViaInstant(registDate.getDate()).getDayOfYear();
+		personId += Constant.convertToLocalDateViaInstant(registDate.getDate()).getDayOfMonth();
 		personId += Constant.convertToLocalDateViaInstant(registDate.getDate()).getMonthValue();
 		personId += LocalDateTime.now().getHour();
 		personId += LocalDateTime.now().getMinute();
@@ -611,7 +611,7 @@ public class PnlQLND extends JPanel implements ActionListener {
 				|| bornDate.getDate() == null) {
 			return null;
 		}
-		if (registDate == null) {
+		if (registDate.getDate() == null) {
 			registDate.setDate(Constant.convertToDateViaInstant(LocalDate.now()));
 		}
 		if(rdCustomer.isSelected()) {

@@ -1,5 +1,7 @@
 package util.storageEvents;
 
-public enum StrEmployeeEvt {
-	GET_ORDER
+import java.io.Serializable;
+
+public enum StrEmployeeEvt implements Serializable{
+	GET_ORDER, EXIT,ORDER_DETAIL,GET_ORDER_BY_ID,UPDATE_ORDER;
 }

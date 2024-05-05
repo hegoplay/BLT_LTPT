@@ -38,6 +38,6 @@ public class Order implements java.io.Serializable{
 	private java.util.Set<OrderDetail> orderDetails;
 	
 	public double getTotal() {
-		return orderDetails.parallelStream().mapToDouble(od -> od.getQuantity() * od.getCd().getPrice()).sum();
+		return orderDetails.stream().mapToDouble(od -> od.getSubTotal()).sum();
 	}
 }

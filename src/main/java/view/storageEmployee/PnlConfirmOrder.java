@@ -6,9 +6,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -45,6 +48,7 @@ import entities.Person;
 import entities.StatiscalEmployee;
 import entities.StorageEmployee;
 import util.Constant;
+import util.storageEvents.StrEmployeeEvt;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -301,18 +305,35 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		tblOrder.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
-				int row = tblOrder.getSelectedRow();
-				Order p = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
-				txtOrderId.setText(p.getOrderId());
-				dateOrder.setDate(Constant.convertToDateViaInstant(p.getCreatedDate()));
-				txtNumber.setText(p.getShippingAddress().getNumber());
-				txtStreet.setText(p.getShippingAddress().getStreet());
-				txtCity.setText(p.getShippingAddress().getCity());
-				txtCustomer.setText(p.getCustomer().getName());
-				Set<OrderDetail> list = OrderDAO.instance.getODSetByOrder(p);
-				p.setOrderDetails(list);
-				txtTotal.setText(String.valueOf(p.getTotal()));
-				tblOD.ReloadTable(list.stream().collect(Collectors.toList()));
+				try {
+					oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+					int row = tblOrder.getSelectedRow();
+					oos.writeObject(tblOrder.getValueAt(row, 0).toString());
+					oos.flush();
+					Order p = (Order) ois.readObject();
+					oos.writeObject(StrEmployeeEvt.ORDER_DETAIL);
+					oos.writeObject(p);
+					
+					oos.flush();
+					
+					Set<OrderDetail> odSet = (Set<OrderDetail>) ois.readObject();
+					
+					txtOrderId.setText(p.getOrderId());
+					dateOrder.setDate(Constant.convertToDateViaInstant(p.getCreatedDate()));
+					txtNumber.setText(p.getShippingAddress().getNumber());
+					txtStreet.setText(p.getShippingAddress().getStreet());
+					txtCity.setText(p.getShippingAddress().getCity());
+					txtCustomer.setText(p.getCustomer().getName());
+					p.setOrderDetails(odSet);
+					txtTotal.setText(String.valueOf(p.getTotal()));
+					tblOD.ReloadTable(odSet.stream().collect(Collectors.toList()));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -324,9 +345,20 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 
 	private void loadAllOrders() {
 		// TODO Auto-generated method stub
-		List<Order> orders = OrderDAO.instance.getOrderByStatus(OrderStatus.PENDING);
+		try {
+			oos.writeObject(StrEmployeeEvt.GET_ORDER);
+			oos.writeObject(OrderStatus.PENDING);
+//			oos.writeObject(null);
+			oos.flush();
+			List<Order> orders = (List<Order>) ois.readObject();
+			System.out.println("YES");
+			System.out.println(orders.size());
+			tblOrder.ReloadTable(orders);
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		tblOrder.ReloadTable(orders);
 		
 	}
 
@@ -348,11 +380,26 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		if (row == -1) {
 			return;
 		}
-		Order order = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
-		order.setStatus(OrderStatus.REJECTED);
-		OrderDAO.instance.update(order);
-		loadAllOrders();
-		resetField();
+		try {
+			oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+			oos.writeObject(tblOrder.getValueAt(row, 0).toString());
+			oos.flush();
+			Order order = (Order) ois.readObject();
+			Order o1 = copyOrder(order);
+			o1.setStatus(OrderStatus.REJECTED);
+			
+			
+			oos.writeObject(StrEmployeeEvt.UPDATE_ORDER);
+			oos.writeObject(o1);
+			
+			oos.flush();
+			loadAllOrders();
+			resetField();
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(btnReject, e.getMessage());
+		}
+		
 	}
 
 	private void acceptOrder() {
@@ -361,11 +408,25 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		if (row == -1) {
 			return;
 		}
-		Order order = OrderDAO.instance.findById(tblOrder.getValueAt(row, 0).toString());
-		order.setStatus(OrderStatus.DELIVERING);
-		OrderDAO.instance.update(order);
-		loadAllOrders();
-		resetField();
+		
+		try {
+			oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+			oos.writeObject(tblOrder.getValueAt(row, 0).toString());
+			oos.flush();
+			Order order = (Order) ois.readObject();
+			Order o1 = copyOrder(order);
+			o1.setStatus(OrderStatus.DELIVERING);
+			
+			oos.writeObject(StrEmployeeEvt.UPDATE_ORDER);
+			oos.writeObject(o1);
+			
+			oos.flush();
+			loadAllOrders();
+			resetField();
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(btnAccept, e.getMessage());
+		}
 		
 	}
 
@@ -377,5 +438,17 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		txtCustomer.setText("");
 		txtTotal.setText("");
 		dateOrder.setDate(null);
+		tblOD.ReloadTable(new ArrayList<OrderDetail>());
+	}
+	
+	private Order copyOrder(Order order) {
+		Order o = new Order();
+		o.setOrderId(order.getOrderId());
+		o.setCreatedDate(order.getCreatedDate());
+		o.setCustomer(order.getCustomer());
+		o.setShippingAddress(order.getShippingAddress());
+		o.setOrderDetails(order.getOrderDetails());
+		o.setStatus(order.getStatus());
+		return o;
 	}
 }

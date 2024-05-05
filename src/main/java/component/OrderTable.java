@@ -32,13 +32,13 @@ public class OrderTable extends JTable {
 	
 	
 	private static final long serialVersionUID = 7958171193332637790L;
-	private static final String[] COLUMN_NAMES = {"mã", "tên khách hàng","ngày gửi","tổng tiền"};
+	private static final String[] COLUMN_NAMES = {"mã", "tên khách hàng","ngày gửi","mã zip"};
 	
 	private final int 
 	id = 0,
 	name = 1,
 	date = 2,
-	total = 3;
+	zipCode = 3;
 	
 	private TableModel model;
 	
@@ -52,9 +52,6 @@ public class OrderTable extends JTable {
 			private static final long serialVersionUID = -2462779278108489448L;
 			@Override
 			public Class<?> getColumnClass(int columnIndex) {
-				if (columnIndex == total) {
-					return Double.class;
-				}
 				// TODO Auto-generated method stub
 				return String.class;
 			}
@@ -80,7 +77,7 @@ public class OrderTable extends JTable {
 		for (Order o : list) {
 			((DefaultTableModel) model)
 			.addRow(new Object[] { o.getOrderId(), o.getCustomer().getName(), 
-					o.getCreatedDate().toString(), o.getTotal() });
+					o.getCreatedDate().toString(), o.getShippingAddress().getZip()});
 		}
 	}
 

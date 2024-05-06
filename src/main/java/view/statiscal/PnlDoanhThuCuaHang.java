@@ -12,10 +12,19 @@ import javax.swing.JScrollBar;
 import java.awt.Choice;
 import javax.swing.JList;
 import javax.swing.table.DefaultTableModel;
+
+import component.CDTable;
+import dao.CDDAO;
+import entities.CD;
+import util.ConnectDB;
+
 import javax.swing.JTextField;
 import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+
+import javax.swing.JScrollPane;
 
 public class PnlDoanhThuCuaHang extends JPanel {
 
@@ -25,6 +34,8 @@ public class PnlDoanhThuCuaHang extends JPanel {
 	private JTextField textLoiNhuan;
 	private JTable table;
 	private DefaultTableModel tableModel;
+	private JTable table_1;
+	private CDTable tblCD;
 	/**
 	 * Create the panel.
 	 */
@@ -166,72 +177,29 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		
 		// Khởi tạo panel chứa JTable
 		Panel panel_2_2_1 = new Panel();
+		
 		panel_2_2_1.setLayout(null);
 		panel_2_2_1.setBackground(new Color(0, 64, 128));
 		panel_2_2_1.setBounds(22, 317, 647, 412); // Đặt kích thước của panel
+//		panel_2_2_1.
 		panel_1.add(panel_2_2_1);
 		
-		JLabel lblNewLabel_1 = new JLabel("Danh sách đĩa CD bán chạy nhất");
-		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(10, 11, 214, 22);
-		panel_2_2_1.add(lblNewLabel_1);
+		JScrollPane srcCD = new JScrollPane();
+		srcCD.setBounds(10, 11, 627, 390);
+		panel_2_2_1.add(srcCD);
 		
-		// Thiết lập kích thước cho JTable
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"CD001", "Album A", "50", "200000", "1000000"},
-				{"CD002", "Album B", "30", "900000", "150000000"},
-				{"CD003", "Album C", "20", "200000", "20000000"},
-				{"CD004", "Album D", "40", "700000", "65000000"},
-				{"CD005", "Album E", "10", "500000", "87000000"},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-					"Mã đĩa CD", "Tên đĩa CD", "Số lượng bán ra", "Giá thành", "Thành tiền"
-			}
-		));
-		table.setBounds(10, 44, 627, 357);
-		panel_2_2_1.add(table);
+		tblCD = new CDTable();
+		srcCD.setViewportView(tblCD);
 		
 
 		setLayout(null);
 
-		// Khởi tạo model với các cột tương ứng
-        String[] columnNames = {"Mã đĩa CD", "Tên đĩa CD", "Số lượng bán ra", "Giá thành", "Thành tiền"};
-        tableModel = new DefaultTableModel(columnNames, 0); // 0 rows initially
-
-        // Thêm dữ liệu mẫu vào model (có thể thêm nhiều dòng tùy ý)
-        Object[] data1 = {"CD001", "Album A", 50, 200000, 10000000};
-        Object[] data2 = {"CD002", "Album B", 30, 150000, 4500000};
-        Object[] data3 = {"CD003", "Album C", 40, 180000, 7200000};
-        tableModel.addRow(data1);
-        tableModel.addRow(data2);
-        tableModel.addRow(data3);
-
-        // Khởi tạo JTable với model đã được tạo
-        table = new JTable(tableModel);
-        table.setBounds(10, 44, 627, 357);
-        panel_2_2_1.add(table);
-    
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // Lấy chỉ số dòng được chọn
-                int row = table.getSelectedRow();
-
-                // Lấy dữ liệu từ dòng được chọn và hiển thị lên các textfield tương ứng
-                textId_CD.setText(table.getValueAt(row, 0).toString());
-                textName_CD.setText(table.getValueAt(row, 1).toString());
-                textQuantity.setText(table.getValueAt(row, 2).toString());
-                textPrice.setText(table.getValueAt(row, 3).toString());
-                textThanhTien.setText(table.getValueAt(row, 4).toString());
-            }
-        });
-
+		LoadAllCD();
         
+	}
+	private void LoadAllCD() {
+		// TODO Auto-generated method stub
+		List<CD> list = CDDAO.instance.getAll();
+		tblCD.ReloadTable(list);
 	}
 }

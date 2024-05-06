@@ -15,7 +15,7 @@ public class CDTable extends JTable {
 	 */
 	private static final long serialVersionUID = -2889426248835663159L;
 
-private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","số lượng tồn kho","giá","còn kinh doanh"};
+private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","Số lượng","Giá","Trạng thái"};
 	
 	private final int 
 	id = 0,

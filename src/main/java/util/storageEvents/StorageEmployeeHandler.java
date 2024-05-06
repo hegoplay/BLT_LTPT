@@ -41,14 +41,14 @@ public class StorageEmployeeHandler implements Runnable {
 		try {
 			while(true) {
 				Object obj = ois.readObject();
-				if (obj == StrEmployeeEvt.EXIT) {
+				if (obj == OrderEvents.EXIT) {
 					// update order
 					ois.close();
 					oos.close();
 					socket.close();
 					break;
 				}
-				if(obj == StrEmployeeEvt.GET_ORDER) {
+				if(obj == OrderEvents.GET_ORDER) {
 					// get order
 					obj = ois.readObject();
 					List<Order> o = new ArrayList<>();
@@ -62,7 +62,7 @@ public class StorageEmployeeHandler implements Runnable {
 					oos.writeObject(o);
 					oos.flush();
 				}
-				if(obj == StrEmployeeEvt.GET_ORDER_BY_ID) {
+				if(obj == OrderEvents.GET_ORDER_BY_ID) {
 					obj = ois.readObject();
 					if (obj instanceof String) {
 						Order o = OrderDAO.instance.findById((String) obj);
@@ -70,7 +70,7 @@ public class StorageEmployeeHandler implements Runnable {
 						oos.flush();
 					}
 				}
-				if (obj == StrEmployeeEvt.ORDER_DETAIL) {
+				if (obj == OrderEvents.ORDER_DETAIL) {
 					// update order
 					obj = ois.readObject();
 					
@@ -87,7 +87,7 @@ public class StorageEmployeeHandler implements Runnable {
 					oos.writeObject(odSet);
 					oos.flush();
 				}
-				if (obj == StrEmployeeEvt.UPDATE_ORDER) {
+				if (obj == OrderEvents.UPDATE_ORDER) {
 					// update order
 					obj = ois.readObject();
 					if (obj instanceof Order	) {

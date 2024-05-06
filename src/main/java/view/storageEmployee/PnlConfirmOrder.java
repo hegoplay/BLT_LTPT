@@ -48,7 +48,7 @@ import entities.Person;
 import entities.StatiscalEmployee;
 import entities.StorageEmployee;
 import util.Constant;
-import util.storageEvents.StrEmployeeEvt;
+import util.storageEvents.OrderEvents;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -306,12 +306,12 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				try {
-					oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+					oos.writeObject(OrderEvents.GET_ORDER_BY_ID);
 					int row = tblOrder.getSelectedRow();
 					oos.writeObject(tblOrder.getValueAt(row, 0).toString());
 					oos.flush();
 					Order p = (Order) ois.readObject();
-					oos.writeObject(StrEmployeeEvt.ORDER_DETAIL);
+					oos.writeObject(OrderEvents.ORDER_DETAIL);
 					oos.writeObject(p);
 					
 					oos.flush();
@@ -346,7 +346,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 	private void loadAllOrders() {
 		// TODO Auto-generated method stub
 		try {
-			oos.writeObject(StrEmployeeEvt.GET_ORDER);
+			oos.writeObject(OrderEvents.GET_ORDER);
 			oos.writeObject(OrderStatus.PENDING);
 //			oos.writeObject(null);
 			oos.flush();
@@ -379,7 +379,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 			return;
 		}
 		try {
-			oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+			oos.writeObject(OrderEvents.GET_ORDER_BY_ID);
 			oos.writeObject(tblOrder.getValueAt(row, 0).toString());
 			oos.flush();
 			Order order = (Order) ois.readObject();
@@ -387,7 +387,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 			o1.setStatus(OrderStatus.REJECTED);
 			
 			
-			oos.writeObject(StrEmployeeEvt.UPDATE_ORDER);
+			oos.writeObject(OrderEvents.UPDATE_ORDER);
 			oos.writeObject(o1);
 			
 			oos.flush();
@@ -408,14 +408,14 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		}
 		
 		try {
-			oos.writeObject(StrEmployeeEvt.GET_ORDER_BY_ID);
+			oos.writeObject(OrderEvents.GET_ORDER_BY_ID);
 			oos.writeObject(tblOrder.getValueAt(row, 0).toString());
 			oos.flush();
 			Order order = (Order) ois.readObject();
 			Order o1 = copyOrder(order);
 			o1.setStatus(OrderStatus.DELIVERING);
 			
-			oos.writeObject(StrEmployeeEvt.UPDATE_ORDER);
+			oos.writeObject(OrderEvents.UPDATE_ORDER);
 			oos.writeObject(o1);
 			
 			oos.flush();

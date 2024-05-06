@@ -43,7 +43,7 @@ public class PnlProduct extends JPanel implements ActionListener{
 	private DefaultTableModel modell;
 	private JTable table_1;
 	private JButton btnXoaRong,btnXoa,btnSua,btnThem;
-	JComboBox comboBoxTrangThai;
+	JComboBox<String> comboBoxTrangThai;
 	/**
 	 * Create the panel.
 	 */

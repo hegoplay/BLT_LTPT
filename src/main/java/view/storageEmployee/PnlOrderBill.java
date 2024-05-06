@@ -32,7 +32,7 @@ import javax.swing.table.JTableHeader;
 import component.OrderTable;
 import entities.Order;
 import entities.OrderStatus;
-import util.storageEvents.StrEmployeeEvt;
+import util.storageEvents.OrderEvents;
 
 public class PnlOrderBill extends JPanel implements ActionListener {
 
@@ -40,8 +40,6 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 	private DefaultTableModel modell;
 	private JTable table_1;
 	private JTextField txtTenKH;
-	private JTextField txtMaSP;
-	private JTextField txtSanPham;
 	private JTextField txtDiaChi;
 	private OrderTable tblOrder;
 
@@ -69,31 +67,13 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 		pnlFind.setLayout(null);
 		
 		JLabel lblTenKH = new JLabel("Tên Khách Hàng");
-		lblTenKH.setBounds(10, 23, 120, 23);
+		lblTenKH.setBounds(10, 132, 120, 23);
 		pnlFind.add(lblTenKH);
 		
 		txtTenKH = new JTextField();
-		txtTenKH.setBounds(10, 47, 239, 20);
+		txtTenKH.setBounds(10, 156, 239, 20);
 		pnlFind.add(txtTenKH);
 		txtTenKH.setColumns(10);
-		
-		JLabel lblMaSP = new JLabel("Mã Sản Phẩm");
-		lblMaSP.setBounds(10, 78, 120, 23);
-		pnlFind.add(lblMaSP);
-		
-		txtMaSP = new JTextField();
-		txtMaSP.setColumns(10);
-		txtMaSP.setBounds(10, 101, 239, 20);
-		pnlFind.add(txtMaSP);
-		
-		JLabel lblTenSP = new JLabel("Tên Sản Phẩm");
-		lblTenSP.setBounds(10, 134, 120, 23);
-		pnlFind.add(lblTenSP);
-		
-		txtSanPham = new JTextField();
-		txtSanPham.setColumns(10);
-		txtSanPham.setBounds(10, 156, 239, 20);
-		pnlFind.add(txtSanPham);
 		
 		JLabel lblDiaChi = new JLabel("Địa Chỉ");
 		lblDiaChi.setBounds(10, 187, 120, 23);
@@ -135,7 +115,7 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 	private void loadAllOrders() {
 		// TODO Auto-generated method stub
 		try {
-			oos.writeObject(StrEmployeeEvt.GET_ORDER);
+			oos.writeObject(OrderEvents.GET_ORDER);
 			oos.writeObject("all");
 //			oos.writeObject(null);
 			oos.flush();

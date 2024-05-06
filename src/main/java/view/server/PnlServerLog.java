@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import dao.PersonDAO;
 import util.Constant;
 import util.CustomerHandler;
 import util.PersonType;
@@ -125,6 +126,11 @@ public class PnlServerLog extends JPanel implements ActionListener {
 							else if (type == PersonType.STORAGE_EMPLOYEE) {
 								 handler = new StorageEmployeeHandler(accept,ois,oos);
 								 textArea.append("Storage employee connected\n");
+							}
+							else if (type == null) {
+								textArea.append("Client type is null\n");
+								oos.writeObject(PersonDAO.instance.findById("KHPTM651750"));
+								oos.flush();
 							}
 //							Thread thread = new Thread(handler);
 //							clients.add(thread);

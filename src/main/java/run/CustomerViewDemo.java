@@ -11,6 +11,7 @@ import entities.Account;
 import entities.Address;
 import entities.Customer;
 import entities.Order;
+import util.clients.CustomerClient;
 import view.customer.CustomerGui;
 
 public class CustomerViewDemo {
@@ -20,6 +21,7 @@ public class CustomerViewDemo {
 //		Set<Order> orders = new HashSet<>();
 //		Customer customer = new Customer("khmk8123", "Nguyen Minh Khang", LocalDate.of(2003, 12, 8), address, "khangDepTrai123@gmail.com", account, LocalDate.of(2024, 5, 1), orders);
 //		PersonDAO.instance.insert(customer);
+		
 		
 		CustomerGui customerGui = new CustomerGui();
 		customerGui.setLocationRelativeTo(null);

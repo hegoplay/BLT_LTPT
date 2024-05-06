@@ -1,5 +1,7 @@
 package util.clients;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,6 +11,7 @@ import java.util.List;
 import entities.CD;
 import entities.Order;
 import entities.OrderDetail;
+import entities.Person;
 import util.Constant;
 import util.PersonType;
 
@@ -16,7 +19,7 @@ import util.PersonType;
 public class CustomerClient {
 	public static CustomerClient instance = new CustomerClient();
 
-	private static final String HOST = "localhost";
+	private static final String HOST = "172.28.64.180";
 	private static final int PORT = Constant.PORT;
 
 	private static Socket serverSocket = null;
@@ -27,13 +30,32 @@ public class CustomerClient {
 		super();
 	}
 
+	public static Person establish() {
+		if (serverSocket == null) {
+			try {
+				serverSocket = new Socket(HOST, PORT);
+				out = new ObjectOutputStream(serverSocket.getOutputStream());
+				in = new ObjectInputStream(serverSocket.getInputStream());
+
+				out.writeObject(null);
+				out.flush();
+				
+				Person person = (Person) in.readObject();
+				return person;
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 	public static void connect() {
 		if (serverSocket == null) {
 			try {
 				serverSocket = new Socket(HOST, PORT);
 				out = new ObjectOutputStream(serverSocket.getOutputStream());
 				in = new ObjectInputStream(serverSocket.getInputStream());
-				
+
 				out.writeObject(PersonType.CUSTOMER);
 				out.flush();
 			} catch (IOException e) {
@@ -41,7 +63,7 @@ public class CustomerClient {
 			}
 		}
 	}
-	
+
 	public static void close() {
 		try {
 			if (serverSocket != null) {
@@ -135,7 +157,7 @@ public class CustomerClient {
 		return orders;
 	}
 
-	public <T> List<T> getAll(Class<T> entityType){
+	public <T> List<T> getAll(Class<T> entityType) {
 		connect();
 		List<T> result = null;
 		try {
@@ -148,7 +170,7 @@ public class CustomerClient {
 		}
 		return result;
 	}
-	
+
 	public List<OrderDetail> findByOrderId(String id) {
 		connect();
 		List<OrderDetail> orderDetails = null;

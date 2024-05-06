@@ -26,7 +26,7 @@ import javax.swing.border.EmptyBorder;
 
 import entities.CD;
 import entities.Customer;
-import util.PersonType;
+import entities.Person;
 import util.clients.CustomerClient;
 
 public class CustomerGui extends JFrame implements ActionListener {
@@ -118,26 +118,13 @@ public class CustomerGui extends JFrame implements ActionListener {
 		menuBar_main.add(Box.createRigidArea(new Dimension(732, 12)));
 		
 		Socket socket = new Socket("172.28.64.180", 8603);
-		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-		oos.writeObject(PersonType.CUSTOMER);
-		oos.flush();
-		oos.writeObject("EXAMPLE_CUSTOMER");
-		oos.flush();
+		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		
 		
-		customer = null;
-		try {
-			customer = (Customer) ois.readObject();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		CustomerGui.customer = (Customer) CustomerClient.establish();
 
-		menu_helloUser = new JMenu("Hello " + customer.getName() + " !");
+		menu_helloUser = new JMenu("Hello " + CustomerGui.customer.getName() + " !");
 		menu_helloUser.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		menu_helloUser.setForeground(new Color(0, 128, 192));
 		menu_helloUser.setHorizontalAlignment(SwingConstants.RIGHT);

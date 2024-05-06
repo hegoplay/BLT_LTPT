@@ -9,27 +9,59 @@ import java.awt.Color;
 import java.awt.Panel;
 import java.awt.Scrollbar;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+
 import java.awt.Choice;
 import javax.swing.JList;
 import javax.swing.table.DefaultTableModel;
+import dao.CDDAO;
+import entities.CD;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JRadioButton;
 import java.awt.Button;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 
 public class PnlSanPhamTheoThang extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private JTable table; // Biến cho bảng hiển thị danh sách sản phẩm
+
+	// Các biến JTextField để hiển thị thông tin sản phẩm được chọn
 	private JTextField textId;
 	private JTextField textName;
 	private JTextField textGiaThanh;
 	private JTextField textSoLuong;
+
+	// Các biến JTextField để nhập thông tin sản phẩm mới
+	private JTextField text_MaSP;
+	private JTextField text_TenSP;
+	private JTextField text_GiaThanh;
+	private JTextField text_SoLuong;
+
+	// Các biến JRadioButton cho trạng thái sản phẩm
+	private JRadioButton rdbtnCon;
+	private JRadioButton rdbtnHet;
+
+	// Các biến JButton để thực hiện các thao tác
+	private JButton btnThem;
+	private JButton btnSua;
+	private JButton btnLamMoi;
+	private JButton btnXoa;
+
+	// Biến JTextField để nhập mã sản phẩm cần tìm kiếm
 	private JTextField textTimTheoMa;
-	private JTable table;
+
+	// Biến JComboBox cho việc chọn tháng
+	private JComboBox coboBoxT;
+
+	// Biến JComboBox cho việc chọn năm
+	private JComboBox comboBoxNam;
 	private DefaultTableModel tableModel;
 
 	/**
@@ -41,13 +73,13 @@ public class PnlSanPhamTheoThang extends JPanel {
 		Panel panel = new Panel();
 		panel.setBackground(new Color(255, 255, 215));
 		panel.setForeground(new Color(230, 221, 208));
-		panel.setBounds(0, 0, 1314, 816);
+		panel.setBounds(10, 10, 1318, 777);
 		add(panel);
 		panel.setLayout(null);
 		
 		Panel panel_1 = new Panel();
+		panel_1.setBounds(23, 25, 1281, 739);
 		panel_1.setBackground(new Color(128, 255, 255));
-		panel_1.setBounds(23, 25, 742, 739);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -108,24 +140,7 @@ public class PnlSanPhamTheoThang extends JPanel {
 		lblNewLabel_1_2_1_2.setBounds(10, 11, 257, 32);
 		panel_2_2.add(lblNewLabel_1_2_1_2);
 		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"SP001", "Sản phẩm A", 100000, 50, "Còn hàng"},
-				{"SP002", "Sản phẩm B", 200000, 30, "Còn hàng"},
-				{"SP003", "Sản phẩm C", 300000, 60, "Còn hàng"},
-				{"SP004", "Sản phẩm D", 1500000, 10, "Còn hàng"},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-					"Mã sản phẩm", "Tên sản phẩm", "Giá thành", "Số lượng", "Trạng thái"
-			}
-		));
-		table.setBounds(10, 42, 692, 358);
-		panel_2_2.add(table);
+	
 		
 		JButton btnTim = new JButton("Tìm\r\n");
 		btnTim.setForeground(new Color(255, 255, 255));
@@ -140,40 +155,77 @@ public class PnlSanPhamTheoThang extends JPanel {
 		comboBoxNam.setBounds(627, 28, 105, 32);
 		panel_1.add(comboBoxNam);
 		
-		Panel panel_1_1 = new Panel();
-		panel_1_1.setLayout(null);
-		panel_1_1.setBackground(new Color(128, 255, 255));
-		panel_1_1.setBounds(815, 25, 468, 739);
-		panel.add(panel_1_1);
-		
-		JLabel lblThngTinSn = new JLabel("Thông tin sản phẩm");
-		lblThngTinSn.setFont(new Font("Times New Roman", Font.PLAIN, 35));
-		lblThngTinSn.setBounds(91, 8, 292, 56);
-		panel_1_1.add(lblThngTinSn);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		comboBox_1.setBounds(536, 25, 136, 32);
-		panel_1_1.add(comboBox_1);
-		
-		JLabel lblNewLabel_1 = new JLabel("Mã sản phẩm\r\n");
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(10, 69, 110, 32);
-		panel_1_1.add(lblNewLabel_1);
-		
-		textId = new JTextField();
-		textId.setBounds(10, 101, 197, 32);
-		panel_1_1.add(textId);
-		textId.setColumns(10);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Tên sản phẩm\r\n");
-		lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblNewLabel_1_1.setBounds(10, 147, 110, 32);
-		panel_1_1.add(lblNewLabel_1_1);
-		
-		textName = new JTextField();
-		textName.setColumns(10);
-		textName.setBounds(10, 178, 312, 32);
+		setLayout(null);
+        
+        JLabel lblThngTinSn = new JLabel("Thông tin sản phẩm");
+        lblThngTinSn.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+        lblThngTinSn.setBounds(864, 11, 334, 56);
+        panel_1.add(lblThngTinSn);
+        
+        Panel panel_2_1_1 = new Panel();
+        panel_2_1_1.setLayout(null);
+        panel_2_1_1.setBackground(new Color(0, 64, 128));
+        panel_2_1_1.setBounds(790, 90, 467, 639);
+        panel_1.add(panel_2_1_1);
+        
+        JLabel lblMaSP = new JLabel("Mã sản phẩm");
+        lblMaSP.setForeground(new Color(255, 255, 255));
+        lblMaSP.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblMaSP.setBounds(10, 23, 105, 32);
+        panel_2_1_1.add(lblMaSP);
+        
+        text_MaSP = new JTextField();
+        text_MaSP.setColumns(10);
+        text_MaSP.setBounds(10, 55, 208, 32);
+        panel_2_1_1.add(text_MaSP);
+        
+        JLabel lblTenSP = new JLabel("Tên sản phẩm");
+        lblTenSP.setForeground(Color.WHITE);
+        lblTenSP.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblTenSP.setBounds(10, 108, 105, 32);
+        panel_2_1_1.add(lblTenSP);
+        
+        text_TenSP = new JTextField();
+        text_TenSP.setColumns(10);
+        text_TenSP.setBounds(10, 143, 447, 32);
+        panel_2_1_1.add(text_TenSP);
+        
+        JLabel lblGiaThanh = new JLabel("Giá thành");
+        lblGiaThanh.setForeground(Color.WHITE);
+        lblGiaThanh.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblGiaThanh.setBounds(10, 197, 105, 32);
+        panel_2_1_1.add(lblGiaThanh);
+        
+        text_GiaThanh = new JTextField();
+        text_GiaThanh.setColumns(10);
+        text_GiaThanh.setBounds(10, 234, 447, 32);
+        panel_2_1_1.add(text_GiaThanh);
+        
+        JLabel lblSoLuong = new JLabel("Số lượng\r\n");
+        lblSoLuong.setForeground(Color.WHITE);
+        lblSoLuong.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblSoLuong.setBounds(10, 284, 105, 32);
+        panel_2_1_1.add(lblSoLuong);
+        
+        JLabel lblTrangThai = new JLabel("Trạng thái\r\n");
+        lblTrangThai.setForeground(Color.WHITE);
+        lblTrangThai.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblTrangThai.setBounds(10, 362, 105, 32);
+        panel_2_1_1.add(lblTrangThai);
+        
+        text_SoLuong = new JTextField();
+        text_SoLuong.setColumns(10);
+        text_SoLuong.setBounds(10, 319, 447, 32);
+        panel_2_1_1.add(text_SoLuong);
+        
+        JRadioButton rdbtnConHang = new JRadioButton("Còn hàng");
+        rdbtnConHang.setBounds(10, 401, 111, 23);
+        panel_2_1_1.add(rdbtnConHang);
+        
+        Panel panel_1_1 = new Panel();
+        JRadioButton rdbtHetHang = new JRadioButton("Hết hàng");
+        rdbtHetHang.setBounds(161, 401, 111, 23);
+        panel_2_1_1.add(rdbtHetHang);
 		panel_1_1.add(textName);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Giá thành");
@@ -238,25 +290,9 @@ public class PnlSanPhamTheoThang extends JPanel {
 		panel_1_1.add(btnXoa);
 		
 		setLayout(null);
-
-        // Các dòng tiếp theo trong constructor
-
-        // Khởi tạo model với các cột tương ứng
-        String[] columnNames = {"Mã sản phẩm", "Tên sản phẩm", "Giá thành", "Số lượng", "Trạng thái"};
-        tableModel = new DefaultTableModel(columnNames, 0); // 0 rows initially
-
-        // Thêm dữ liệu mẫu vào model (có thể thêm nhiều dòng tùy ý)
-        Object[] data1 = {"SP001", "Sản phẩm A", 100000, 50, "Còn hàng"};
-        Object[] data2 = {"SP002", "Sản phẩm B", 150000, 30, "Hết hàng"};
-        Object[] data3 = {"SP003", "Sản phẩm C", 200000, 40, "Còn hàng"};
-        tableModel.addRow(data1);
-        tableModel.addRow(data2);
-        tableModel.addRow(data3);
-
-        // Khởi tạo JTable với model đã được tạo
-        table = new JTable(tableModel);
-        table.setBounds(10, 42, 692, 358);
-        panel_2_2.add(table);
+		
+		
 
 	}
+
 }

@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JScrollPane;
+import javax.swing.JRadioButton;
 
 public class PnlDoanhThuCuaHang extends JPanel {
 
@@ -165,15 +166,19 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		textPrice.setBounds(10, 308, 347, 27);
 		panel_2_2.add(textPrice);
 		
-		TextField textThanhTien = new TextField();
-		textThanhTien.setBounds(10, 384, 347, 27);
-		panel_2_2.add(textThanhTien);
-		
-		JLabel lblNewLabel_1_1_1_2_1 = new JLabel("Thành tiền");
+		JLabel lblNewLabel_1_1_1_2_1 = new JLabel("Trạng thái");
 		lblNewLabel_1_1_1_2_1.setForeground(Color.WHITE);
 		lblNewLabel_1_1_1_2_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblNewLabel_1_1_1_2_1.setBounds(10, 356, 173, 22);
 		panel_2_2.add(lblNewLabel_1_1_1_2_1);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("Còn kinh doanh");
+		rdbtnNewRadioButton.setBounds(10, 388, 138, 23);
+		panel_2_2.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnNgngKinhDoanh = new JRadioButton("Ngưng kinh doanh");
+		rdbtnNgngKinhDoanh.setBounds(175, 388, 138, 23);
+		panel_2_2.add(rdbtnNgngKinhDoanh);
 		
 		// Khởi tạo panel chứa JTable
 		Panel panel_2_2_1 = new Panel();
@@ -191,11 +196,41 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		tblCD = new CDTable();
 		srcCD.setViewportView(tblCD);
 		
+		JLabel lblDanhSacha = new JLabel("Danh sach đĩa CD bán chạy\r\n");
+		lblDanhSacha.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		lblDanhSacha.setBounds(29, 281, 230, 30);
+		panel_1.add(lblDanhSacha);
+		
 
 		setLayout(null);
-
+		
+		tblCD.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        int selectedRow = tblCD.getSelectedRow();
+		        if (selectedRow != -1) {
+		            // Lấy dữ liệu từ hàng được chọn
+		            String maCD = tblCD.getValueAt(selectedRow, 0).toString();
+		            String tenCD = tblCD.getValueAt(selectedRow, 1).toString();
+		            String soLuong = tblCD.getValueAt(selectedRow, 2).toString();
+		            String giaThanh = tblCD.getValueAt(selectedRow, 3).toString();
+		            // Hiển thị dữ liệu lên các TextField hoặc JTextArea tương ứng
+		            textId_CD.setText(maCD);
+		            textName_CD.setText(tenCD);
+		            textQuantity.setText(soLuong);
+		            textPrice.setText(giaThanh);
+		            // Cập nhật các thông tin khác tương ứng nếu cần
+		            
+		            // Cập nhật trạng thái của JRadioButton
+		            boolean isConKinhDoanh = Boolean.parseBoolean(tblCD.getValueAt(selectedRow, 4).toString());
+		            rdbtnNewRadioButton.setSelected(isConKinhDoanh);
+		            rdbtnNgngKinhDoanh.setSelected(!isConKinhDoanh);
+		        }
+		    }
+		});
+		
 		LoadAllCD();
-        
+		
 	}
 	private void LoadAllCD() {
 		// TODO Auto-generated method stub

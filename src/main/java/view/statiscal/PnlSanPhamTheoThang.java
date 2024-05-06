@@ -25,6 +25,7 @@ import entities.Person;
 import entities.StatiscalEmployee;
 import entities.StorageEmployee;
 import util.Constant;
+import util.clients.StatisticalClient;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -358,7 +359,7 @@ public class PnlSanPhamTheoThang extends JPanel implements ActionListener {
 
 	private void loadData() {
 		// TODO Auto-generated method stub
-		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(cmbMonth.getSelectedIndex() + 1, 2022 + cmbYear.getSelectedIndex());
+		Map<CD,Integer> listCD = StatisticalClient.instance.getCDinTime(cmbMonth.getSelectedIndex() + 1, 2022 + cmbYear.getSelectedIndex());
 //		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(5,2024);
 		List<CD> ls = new ArrayList<>();
 		int sum = 0;

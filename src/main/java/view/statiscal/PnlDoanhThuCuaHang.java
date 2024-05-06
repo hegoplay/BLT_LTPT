@@ -17,6 +17,7 @@ import component.CDTable;
 import dao.CDDAO;
 import entities.CD;
 import util.ConnectDB;
+import util.clients.StatisticalClient;
 
 import javax.swing.JTextField;
 import java.awt.TextField;
@@ -65,7 +66,7 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		textDoanhThu.setColumns(10);
 		textDoanhThu.setBounds(10, 55, 258, 58);
 		panel_2.add(textDoanhThu);
-		textDoanhThu.setText("9890000 VNĐ");
+		textDoanhThu.setText("2,224,000 VNĐ");
 		textDoanhThu.setEditable(false);
 		
 		JLabel lblNewLabel_2 = new JLabel("Doanh thu (VNĐ)");
@@ -85,10 +86,10 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		textDoanhSo.setColumns(10);
 		textDoanhSo.setBounds(10, 55, 288, 58);
 		panel_3.add(textDoanhSo);
-		textDoanhSo.setText("8990000 VNĐ");
+		textDoanhSo.setText("10 %");
 		textDoanhSo.setEditable(false);
 		
-		JLabel lblNewLabel_2_2 = new JLabel("Doanh số \r\n");
+		JLabel lblNewLabel_2_2 = new JLabel("Lợi nhuận \r\n");
 		lblNewLabel_2_2.setForeground(Color.WHITE);
 		lblNewLabel_2_2.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNewLabel_2_2.setBounds(108, 11, 109, 33);
@@ -105,10 +106,10 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		textLoiNhuan.setColumns(10);
 		textLoiNhuan.setBounds(10, 55, 279, 58);
 		panel_2_1.add(textLoiNhuan);
-		textLoiNhuan.setText("990000 VNĐ");
+		textLoiNhuan.setText("222,400 VNĐ");
 		textLoiNhuan.setEditable(false);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("Lợi nhuận (VNĐ)");
+		JLabel lblNewLabel_2_1 = new JLabel("Thành tiền (VNĐ)");
 		lblNewLabel_2_1.setForeground(Color.WHITE);
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNewLabel_2_1.setBounds(61, 11, 173, 33);
@@ -230,11 +231,44 @@ public class PnlDoanhThuCuaHang extends JPanel {
 		});
 		
 		LoadAllCD();
-		
+
+//		try {
+//		    int quantity;
+//		    int price;
+//
+//		    // Kiểm tra và gán giá trị cho quantity
+//		    if (textQuantity.getText().isEmpty()) {
+//		        // Nếu textQuantity rỗng, gán giá trị mặc định là 1
+//		        quantity = 1;
+//		    } else {
+//		        // Ngược lại, lấy giá trị từ textQuantity
+//		        quantity = Integer.parseInt(textQuantity.getText());
+//		    }
+//
+//		    // Kiểm tra và gán giá trị cho price
+//		    if (textPrice.getText().isEmpty()) {
+//		        // Nếu textPrice rỗng, gán giá trị mặc định là 0 (hoặc giá trị khác tùy thuộc vào yêu cầu của ứng dụng)
+//		        price = 1;
+//		    } else {
+//		        // Ngược lại, lấy giá trị từ textPrice
+//		        price = Integer.parseInt(textPrice.getText());
+//		    }
+//
+//		    // Tính toán doanh thu và hiển thị kết quả
+//		    int revenue = (int) calculateRevenue(quantity, price);
+//		    textDoanhThu.setText(revenue + " VNĐ");
+//		} catch (NumberFormatException e) {
+//		    // Xử lý ngoại lệ khi textQuantity hoặc textPrice không chứa một giá trị số nguyên hợp lệ
+//		    // Ví dụ: Hiển thị một thông báo lỗi hoặc thực hiện hành động khác tùy thuộc vào yêu cầu của ứng dụng
+//		}
 	}
 	private void LoadAllCD() {
 		// TODO Auto-generated method stub
-		List<CD> list = CDDAO.instance.getAll();
+		List<CD> list = StatisticalClient.instance.getAllCD();
 		tblCD.ReloadTable(list);
 	}
+	private double calculateRevenue(int quantity, double price) {
+	    return quantity * price;
+	}
+
 }

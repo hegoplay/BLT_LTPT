@@ -116,7 +116,9 @@ public class CustomerHandler implements Runnable {
 							System.out.println("OrderDetail inserted: " + orderDetail.getOrder().getOrderId());
 						}
 						break;
-	
+					case "EXAMPLE_CUSTOMER":
+						out.writeObject(PersonDAO.instance.findById("KHDTQ651514"));
+						out.flush();
 					default:
 						System.out.println("Invalid request.");
 						break;

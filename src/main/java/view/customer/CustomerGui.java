@@ -63,7 +63,7 @@ public class CustomerGui extends JFrame implements ActionListener {
 	private OrderPanel myOrdersPanel;
 	
 	// This temporary variable represents the current logged in user.
-	public static final String customerID = "khmk8123";
+//	public static final String customerID = "khmk8123";
 	
 	/**
 	 * Launch the application.
@@ -124,7 +124,25 @@ public class CustomerGui extends JFrame implements ActionListener {
 		// Add some rigid space to align Shopping to the right
 		menuBar_main.add(Box.createRigidArea(new Dimension(732, 12)));
 		
-		Customer customer = (Customer) PersonDAO.instance.findById(customerID);
+		Socket socket = new Socket("172.28.64.180", 8603);
+		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+		oos.writeObject(PersonType.CUSTOMER);
+		oos.flush();
+		oos.writeObject("EXAMPLE_CUSTOMER");
+		oos.flush();
+		
+		
+		Customer customer = null;
+		try {
+			customer = (Customer) ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		menu_helloUser = new JMenu("Hello " + customer.getName() + " !");
 		menu_helloUser.setFont(new Font("Segoe UI", Font.BOLD, 17));

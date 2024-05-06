@@ -22,6 +22,7 @@ public class EditHistory implements java.io.Serializable{
 	private static final long serialVersionUID = 2485122972982980544L;
 	@jakarta.persistence.Id
 	@Column(name = "edit_id")
+	@jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
 	private int id;
 //	0 là thêm sản phẩm
 //	1 tơi 15 đại diện cho từng sự cập nhật từng trường name, quantity, price, status

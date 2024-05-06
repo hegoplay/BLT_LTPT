@@ -4,17 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.util.Set;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -26,16 +24,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import dao.PersonDAO;
-import entities.Account;
-import entities.Address;
+import entities.CD;
 import entities.Customer;
-import entities.Order;
-import entities.Person;
-import util.clients.CustomerClient;
 import util.PersonType;
-
-import java.awt.BorderLayout;
+import util.clients.CustomerClient;
 
 public class CustomerGui extends JFrame implements ActionListener {
 
@@ -61,6 +53,7 @@ public class CustomerGui extends JFrame implements ActionListener {
 	private CartPanel cartPanel;
 	private MyProfilePanel myProfilePanel;
 	private OrderPanel myOrdersPanel;
+	public static Customer customer;
 	
 	// This temporary variable represents the current logged in user.
 //	public static final String customerID = "khmk8123";
@@ -133,7 +126,7 @@ public class CustomerGui extends JFrame implements ActionListener {
 		oos.flush();
 		
 		
-		Customer customer = null;
+		customer = null;
 		try {
 			customer = (Customer) ois.readObject();
 		} catch (ClassNotFoundException e) {
@@ -211,6 +204,11 @@ public class CustomerGui extends JFrame implements ActionListener {
 			// Load the profile of the currently logged in customer.
 			this.myProfilePanel.loadProfileData();
 		} 
+		else if (command.equals("Find CDs")) {
+			// Load the main page.
+			List<CD> all = CustomerClient.instance.getAll(CD.class);
+			this.findPanel.setTableData(all);
+		}
 		else if (command.equals("Sign out")) {
 			// Log out the current user & release all the resoucres.
 			CustomerClient.close();

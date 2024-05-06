@@ -87,7 +87,7 @@ public class MyProfilePanel extends JPanel {
 	public void loadProfileData() {
 		// Load user data to text fields.
 		// Use DAO to get user data from database.
-		Customer customer = (Customer) CustomerClient.instance.findById(CustomerGui.customerID, Person.class);
+		Customer customer = CustomerGui.customer;
 		
 		textField_userId.setText(customer.getPersonID());
 		textField_name.setText(customer.getName());

@@ -10,6 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Set;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -28,6 +33,9 @@ import entities.Customer;
 import entities.Order;
 import entities.Person;
 import util.clients.CustomerClient;
+import util.PersonType;
+
+import java.awt.BorderLayout;
 
 public class CustomerGui extends JFrame implements ActionListener {
 
@@ -44,6 +52,8 @@ public class CustomerGui extends JFrame implements ActionListener {
 	private JMenuItem menuItem_signOut;
 	private JMenuItem menuItem_mainPage;
 	
+	private Socket socket;
+	
 	private JPanel cardPanel;
 	private CardLayout cardLayout;
 	private mainPanel mainPanel;
@@ -58,24 +68,30 @@ public class CustomerGui extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CustomerGui frame = new CustomerGui();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			private CustomerGui frame;
+//
+//			public void run() {
+//				try {
+//					frame = new CustomerGui();
+//					frame.setLocationRelativeTo(null);
+//					frame.setVisible(true);
+//					frame.connect2Server();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		
+//	}
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public CustomerGui() {
+	public CustomerGui() throws UnknownHostException, IOException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1080, 650);
 
@@ -154,7 +170,7 @@ public class CustomerGui extends JFrame implements ActionListener {
 	
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(50, 0, 50, 0));
-
+		
 	}
 	
 	@Override

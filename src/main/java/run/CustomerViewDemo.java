@@ -1,5 +1,7 @@
 package run;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +14,7 @@ import entities.Order;
 import view.customer.CustomerGui;
 
 public class CustomerViewDemo {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException, IOException {
 //		Address address = new Address("7000", "Sai Gon", "3/2", "888");
 //		Account account = new Account("khmk8123", "123456");
 //		Set<Order> orders = new HashSet<>();

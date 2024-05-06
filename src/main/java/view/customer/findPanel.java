@@ -1,30 +1,24 @@
 package view.customer;
 
-import entities.CD;
-
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
-
-import dao.CdDAO;
-
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+
+import dao.CDDAO;
+import entities.CD;
 
 public class findPanel extends JPanel implements ActionListener {
 
@@ -103,7 +97,7 @@ public class findPanel extends JPanel implements ActionListener {
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
 			// Call the method to set data for the table.
-			setTableData(CdDAO.instance.findByNameAndPrice(cdName, priceFilter));
+			setTableData(CDDAO.instance.findByNameAndPrice(cdName, priceFilter));
 
 		} else if (command.equals("Add to cart")) {
 			// Call the method to get and store selected CDs
@@ -133,7 +127,7 @@ public class findPanel extends JPanel implements ActionListener {
 			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
 
 			// Add the selected CD to the selectedCDs list
-			CD selectedCD = CdDAO.instance.findById(selectedCdID);
+			CD selectedCD = CDDAO.instance.findById(selectedCdID);
 
 			CartPanel.cartCDs.add(selectedCD);
 		}

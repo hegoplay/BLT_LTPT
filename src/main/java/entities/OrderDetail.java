@@ -27,7 +27,6 @@ public class OrderDetail implements Serializable{
 	private CD cd;
 	private int quantity;
 	
-	// Subtotal computing method (Khang - 28/04/2024).
 	public double getSubTotal() {
 		return quantity * cd.getPrice();
 	}

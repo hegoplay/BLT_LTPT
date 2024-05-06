@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import dao.CdDAO;
+import dao.CDDAO;
 import entities.CD;
 
 public class CartPanel extends JPanel implements ActionListener {
@@ -130,7 +130,7 @@ public class CartPanel extends JPanel implements ActionListener {
 		if (action.equals("Find")) {
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
-			loadCartData(CdDAO.instance.findByNameAndPrice(cdName, priceFilter));
+			loadCartData(CDDAO.instance.findByNameAndPrice(cdName, priceFilter));
 		} else if (action.equals("Place order")) {
 			// Get selected rows from the table.
 			orderCDs = getSelectedCDs();
@@ -167,7 +167,7 @@ public class CartPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < selectedRows.length; i++) {
 			int selectedRow = selectedRows[i];
 			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
-			CD selectedCD = CdDAO.instance.findById(selectedCdID);
+			CD selectedCD = CDDAO.instance.findById(selectedCdID);
 			selectedCDs.add(selectedCD);
 		}
 		return selectedCDs;

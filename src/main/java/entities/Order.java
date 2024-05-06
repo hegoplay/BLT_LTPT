@@ -16,19 +16,18 @@ import jakarta.persistence.GenerationType;
 @lombok.NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "orders")
-public class Order implements java.io.Serializable{
+public class Order implements java.io.Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8225572191751469055L;
-	
+
 	// Khang (04/05/2024) : OrderId field is modified to auto generated.
 	@jakarta.persistence.Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String orderId;
-	
-	
+
 	@Column(name = "created_date")
 	private LocalDate createdDate;
 	@Column(name = "shipped_date")
@@ -43,5 +42,19 @@ public class Order implements java.io.Serializable{
 	private Customer customer;
 	@jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
 	private OrderStatus status;
-	
+
+	@jakarta.persistence.OneToMany(mappedBy = "order")
+	private java.util.Set<OrderDetail> orderDetails;
+
+	public double getTotal() {
+		return orderDetails.stream().mapToDouble(od -> od.getSubTotal()).sum();
+	}
+
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", createdDate=" + createdDate + ", shippedDate=" + shippedDate
+				+ ", shippingAddress=" + shippingAddress + ", storageEmployee=" + storageEmployee + ", customer="
+				+ customer + ", status=" + status + "]";
+	}
+
 }

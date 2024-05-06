@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 import util.Constant;
 import util.CustomerHandler;
 import util.PersonType;
+import util.storageEvents.StorageEmployeeHandler;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -88,6 +89,7 @@ public class PnlServerLog extends JPanel implements ActionListener {
 				}
 
 			}
+			textArea.append("Server was stopped\n");
 
 		}
 	}
@@ -114,12 +116,16 @@ public class PnlServerLog extends JPanel implements ActionListener {
 							Runnable handler = null;
 							if (type == PersonType.CUSTOMER) {
 								handler = new CustomerHandler(accept,ois,oos);
+								textArea.append("Customer connected\n");
+							}
+							else if (type == PersonType.STORAGE_EMPLOYEE) {
+								 handler = new StorageEmployeeHandler(accept,ois,oos);
+								 textArea.append("Storage employee connected\n");
 							}
 							Thread thread = new Thread(handler);
 							clients.add(thread);
 							thread.start();
 						} catch (IOException e) {
-							textArea.append("Error when connect to client\n");
 							isRunning = false;
 						}
 					}

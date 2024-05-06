@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import util.Constant;
+import view.statiscal.PnlDoanhThuCuaHang;
+import view.statiscal.PnlSanPhamTheoThang;
 
 import javax.swing.JMenuBar;
 import java.awt.BorderLayout;
@@ -36,6 +38,10 @@ public class ServerFrame extends JFrame implements ActionListener {
 	private JMenuItem mntmQLND;
 	private JMenu mnCheckLog;
 	private JMenuItem mntmAllLog;
+	private JMenu mnThongKe;
+	private JMenuItem mntmDoanhThu;
+	private JMenuItem mntmSanPhamTheoThang;
+
 
 	/**
 	 * Launch the application.
@@ -77,6 +83,21 @@ public class ServerFrame extends JFrame implements ActionListener {
 		mnCheckLog = new JMenu("Dòng sự kiện");
 		mnbServer.add(mnCheckLog);
 		
+		//Thống kê
+		mnThongKe = new JMenu ("Thống kê");
+		mnbServer.add(mnThongKe);
+		
+		mntmDoanhThu = new JMenuItem("Doanh thu cửa hàng");
+		mntmDoanhThu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK));
+		mntmDoanhThu.addActionListener(this);
+		mnThongKe.add(mntmDoanhThu);
+
+		mntmSanPhamTheoThang = new JMenuItem("Sản phẩm theo tháng");
+		mntmSanPhamTheoThang.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mntmSanPhamTheoThang.addActionListener(this);
+		mnThongKe.add(mntmSanPhamTheoThang);
+		
+		
 		mntmAllLog = new JMenuItem("Log");
 		mntmAllLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
 		mnCheckLog.add(mntmAllLog);
@@ -101,16 +122,28 @@ public class ServerFrame extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == mntmQLND) {
-			CardLayout cardLayout = (CardLayout) contentPane.getLayout();
-			cardLayout.show(contentPane, "QLND");
-		}
-		else if (e.getSource()==mntmAllLog) {
-			CardLayout cardLayout = (CardLayout) contentPane.getLayout();
-			cardLayout.show(contentPane, "LOG");
-		}
+	    if (e.getSource() == mntmQLND) {
+	        CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+	        cardLayout.show(contentPane, "QLND");
+	    } else if (e.getSource() == mntmAllLog) {
+	        CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+	        cardLayout.show(contentPane, "LOG");
+	    } else if (e.getSource() == mntmDoanhThu) {
+	        // Show the "Doanh thu cửa hàng" panel
+	        PnlDoanhThuCuaHang doanhThuPanel = new PnlDoanhThuCuaHang();
+	        contentPane.add(doanhThuPanel, "DOANH_THU");
+	        CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+	        cardLayout.show(contentPane, "DOANH_THU");
+	    } else if (e.getSource() == mntmSanPhamTheoThang) {
+	        // Show the "Thống kê sản phẩm theo tháng" panel
+	        PnlSanPhamTheoThang sanPhamPanel = new PnlSanPhamTheoThang();
+	        contentPane.add(sanPhamPanel, "SAN_PHAM_THEO_THANG");
+	        CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+	        cardLayout.show(contentPane, "SAN_PHAM_THEO_THANG");
+	    }
 	}
-	
+
+
 	
 
 }

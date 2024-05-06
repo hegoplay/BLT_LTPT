@@ -7,23 +7,22 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import util.ConnectDB;
 
-public class CdDAO implements InterfaceDAO<CD> {
-
-	public static CdDAO instance = new CdDAO();
-
-	private static EntityManager manager;
-
-	public CdDAO() {
-		manager = ConnectDB.instance.manager;
+public class CDDAO implements InterfaceDAO<CD>{
+	public static CDDAO instance = new CDDAO();
+	
+	private EntityManager StorageManager;
+	
+	private CDDAO() {
+		StorageManager = ConnectDB.instance.manager;
 	}
-
+	
 	@Override
 	public void insert(CD obj) {
 		EntityTransaction transaction = null;
 		try {
-			transaction = manager.getTransaction();
+			transaction = StorageManager.getTransaction();
 			transaction.begin();
-			manager.persist(obj);
+			StorageManager.persist(obj);
 			transaction.commit();
 		} catch (Exception e) {
 			if (transaction != null && transaction.isActive()) {
@@ -36,9 +35,9 @@ public class CdDAO implements InterfaceDAO<CD> {
 	public void update(CD obj) {
 		EntityTransaction transaction = null;
 		try {
-			transaction = manager.getTransaction();
+			transaction = StorageManager.getTransaction();
 			transaction.begin();
-			manager.merge(obj);
+			StorageManager.merge(obj);
 			transaction.commit();
 		} catch (Exception e) {
 			if (transaction != null && transaction.isActive()) {
@@ -51,9 +50,9 @@ public class CdDAO implements InterfaceDAO<CD> {
 	public void delete(CD obj) {
 		EntityTransaction transaction = null;
 		try {
-			transaction = manager.getTransaction();
+			transaction = StorageManager.getTransaction();
 			transaction.begin();
-			manager.remove(obj);
+			StorageManager.remove(obj);
 			transaction.commit();
 		} catch (Exception e) {
 			if (transaction != null && transaction.isActive()) {
@@ -64,25 +63,23 @@ public class CdDAO implements InterfaceDAO<CD> {
 
 	@Override
 	public CD findById(String id) {
-		return manager.find(CD.class, id);
+		return StorageManager.find(CD.class, id);
 	}
 
 	@Override
 	public List<CD> getAll() {
-		return manager.createQuery("from CD", CD.class).getResultList();
+//		help me get all cd in database with the help of hibernate
+		return StorageManager.createQuery("from CD", CD.class).getResultList();
 	}
 
-	public List<CD> findByNameAndPrice(String name, String priceOrder) {
-		String order = "asc";
-		if ("Ascending".equalsIgnoreCase(priceOrder)) {
-			order = "asc";
-		} else if ("Descending".equalsIgnoreCase(priceOrder)) {
-			order = "desc";
-		} else {
-			throw new IllegalArgumentException("Invalid priceOrder: " + priceOrder);
-		}
-		return manager.createQuery("from CD where name like :name order by price " + order, CD.class)
-				.setParameter("name", "%" + name + "%").getResultList();
-	}
+	
+	public List<CD> findByNameAndPrice(String cdName, String priceFilter) {
+	    String sortOrder = "asc".equalsIgnoreCase(priceFilter) ? "asc" : "desc";
+	    String queryString = "from CD where cdName like :cdName order by price " + sortOrder;
+		
+		return StorageManager.createQuery(queryString, CD.class)
+				.setParameter("cdName", "%" + cdName + "%")
+				.getResultList();
+    }
 
 }

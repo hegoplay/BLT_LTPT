@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
-import dao.CdDAO;
+import dao.CDDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import dao.PersonDAO;
@@ -235,7 +235,7 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		for (int i = 0; i < rows.length; i++) {
 			
 			// get the selected CD from the table and remove it from the orderCDs list in CartPanel.
-			CD removeCd = CdDAO.instance.findById((String) table.getValueAt(rows[i], 0));
+			CD removeCd = CDDAO.instance.findById((String) table.getValueAt(rows[i], 0));
 			CartPanel.orderCDs.remove(removeCd);
 		}
 		loadTableData(CartPanel.orderCDs);
@@ -288,7 +288,7 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		// Loop through the table and insert each order detail into the database.
 		for (int i = 0; i < model.getRowCount(); i++) {
 			
-			CD cd = CdDAO.instance.findById((String) model.getValueAt(i, 0));
+			CD cd = CDDAO.instance.findById((String) model.getValueAt(i, 0));
 			int orderedQuantity = (int) model.getValueAt(i, 3);
 			
 			OrderDetail orderDetail = new OrderDetail(order, cd, orderedQuantity);

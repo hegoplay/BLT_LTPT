@@ -53,6 +53,11 @@ private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","Số lượng
 				// TODO Auto-generated method stub
 				return false;
 			}
+			@Override
+			public Object getValueAt(int row, int column) {
+				// TODO Auto-generated method stub
+				return super.getValueAt(row, column);
+			}
 		};
 		this.setModel(model);
 		
@@ -70,4 +75,5 @@ private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","Số lượng
                     cd.getQuantity(), cd.getPrice(),cd.isStatus()});
 		}
 	}
+	
 }

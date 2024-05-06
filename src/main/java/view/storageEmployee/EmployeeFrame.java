@@ -6,7 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import dao.PersonDAO;
+import entities.StorageEmployee;
 import util.PersonType;
+import util.storageEvents.PersonEvents;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -141,7 +144,7 @@ public class EmployeeFrame extends JFrame {
         PnlConfirmOrder pnlConfirmOrder = new PnlConfirmOrder(socket, oos, ois);
         pnlContent.add(pnlConfirmOrder, "Pnl_ConfirmOrder");
         
-        PnlProduct pnlProduct = new PnlProduct();
+        PnlProduct pnlProduct = new PnlProduct(getExampleStorageEmployee(),socket,oos,ois);
         pnlContent.add(pnlProduct, "Pnl_Product");
         
         JLabel lblNewLabel_1 = new JLabel("");
@@ -176,6 +179,22 @@ public class EmployeeFrame extends JFrame {
         
 	}
 	
+	private StorageEmployee getExampleStorageEmployee() {
+		// TODO Auto-generated method stub
+		try {
+			oos.writeObject(PersonEvents.GET_EXAMPLE_STORAGE_EMPLOYEE);
+			oos.flush();
+			return (StorageEmployee) ois.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private void connectServer() {
 		// TODO Auto-generated method stub
 		try {

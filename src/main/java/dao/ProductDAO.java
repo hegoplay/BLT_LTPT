@@ -4,8 +4,10 @@ import java.util.List;
 
 
 import entities.CD;
+import entities.EditHistory;
 import entities.Person;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import util.ConnectDB;
 import view.storageEmployee.PnlProduct;
 
@@ -52,7 +54,14 @@ public static ProductDAO instance = new ProductDAO();
 	@Override
 	public List<CD> getAll() {
 		// TODO Auto-generated method stub
-		return StorageManager.createQuery("from CD", CD.class).getResultList();
+		TypedQuery<CD> query = StorageManager.createQuery("from CD", CD.class);
+		return query.getResultList();
+	}
+
+	public void insertEditHistory(EditHistory obj) {
+		StorageManager.getTransaction().begin();
+		StorageManager.persist(obj);
+		StorageManager.getTransaction().commit();
 	}
 
 	

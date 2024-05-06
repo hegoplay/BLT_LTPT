@@ -236,13 +236,14 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		
 		// Initialize the previously confirmed order. 
 		Order order = new Order();
-		List<OrderDetail> orderDetails = new ArrayList<>();
 		
 		Address shippingAddress = new Address(text_zip.getText().trim(), text_city.getText().trim(), text_street.getText().trim(), text_number.getText().trim());
-		Customer customer = (Customer) CustomerClient.instance.findById(CustomerGui.customerID, Person.class);
+		Customer customer = CustomerGui.customer;
 		
 		// Append the newly created order to the customer's order list.
 		customer.getOrders().add(order);
+		
+//		List<Order> orders = CustomerClient.instance.getAll(Order.class);
 		
 		order.setCreatedDate(LocalDate.now());
 		order.setShippedDate(null);

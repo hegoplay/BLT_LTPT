@@ -135,6 +135,20 @@ public class CustomerClient {
 		return orders;
 	}
 
+	public <T> List<T> getAll(Class<T> entityType){
+		connect();
+		List<T> result = null;
+		try {
+			out.writeObject("getAll");
+			out.writeObject(entityType.getSimpleName());
+			out.flush();
+			result = (List<T>) in.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public List<OrderDetail> findByOrderId(String id) {
 		connect();
 		List<OrderDetail> orderDetails = null;

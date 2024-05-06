@@ -95,7 +95,22 @@ public class CustomerHandler implements Runnable {
 						break;
 	
 					case "getAll":
-	
+						entityType = (String) in.readObject();
+						
+						if (entityType.equals(Order.class.getSimpleName())) {
+							List<Order> allOrders = OrderDAO.instance.getAll();
+							out.writeObject(allOrders);
+							out.flush();
+						} else if (entityType.equals(OrderDetail.class.getSimpleName())) {
+							List<OrderDetail> allOrderDetails = OrderDetailDAO.instance.getAll();
+							out.writeObject(allOrderDetails);
+							out.flush();
+						} else if (entityType.equals(CD.class.getSimpleName())) {
+							List<CD> allCDs = CDDAO.instance.getAll();
+							out.writeObject(allCDs);
+							out.flush();
+						}
+						
 						break;
 	
 					case "insert":
@@ -116,7 +131,9 @@ public class CustomerHandler implements Runnable {
 							System.out.println("OrderDetail inserted: " + orderDetail.getOrder().getOrderId());
 						}
 						break;
-	
+					case "EXAMPLE_CUSTOMER":
+						out.writeObject(PersonDAO.instance.findById("KHDTQ651514"));
+						out.flush();
 					default:
 						System.out.println("Invalid request.");
 						break;

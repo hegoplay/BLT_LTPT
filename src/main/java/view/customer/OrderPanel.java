@@ -215,7 +215,7 @@ public class OrderPanel extends JPanel implements MouseListener {
 //		result = OrderDAO.instance.findByCustomerId(CustomerGui.customerID);
 		
 		// Use client to request all Order(s) attached to the currently logged in customer.
-		result = CustomerClient.instance.findByCustomerId(CustomerGui.customerID);
+		result = CustomerClient.instance.findByCustomerId(CustomerGui.customer.getPersonID());
 		
 		DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
 		model.setRowCount(0);

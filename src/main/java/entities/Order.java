@@ -3,6 +3,7 @@ package entities;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 
 @lombok.Getter
@@ -22,6 +23,7 @@ public class Order implements java.io.Serializable{
 	private LocalDate createdDate;
 	@Column(name = "shipped_date")
 	private LocalDate shippedDate;
+	@Embedded
 	private Address shippingAddress;
 	@jakarta.persistence.ManyToOne
 	@jakarta.persistence.JoinColumn(name = "employee_id")
@@ -31,5 +33,11 @@ public class Order implements java.io.Serializable{
 	private Customer customer;
 	@jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
 	private OrderStatus status;
+//	fixed by HeGoPlay
+	@jakarta.persistence.OneToMany(mappedBy = "order")
+	private java.util.Set<OrderDetail> orderDetails;
 	
+	public double getTotal() {
+		return orderDetails.stream().mapToDouble(od -> od.getSubTotal()).sum();
+	}
 }

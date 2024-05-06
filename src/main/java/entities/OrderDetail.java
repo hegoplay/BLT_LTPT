@@ -26,4 +26,8 @@ public class OrderDetail implements Serializable{
 	@jakarta.persistence.JoinColumn(name = "cd_id")
 	private CD cd;
 	private int quantity;
+	
+	public double getSubTotal() {
+		return quantity * cd.getPrice();
+	}
 }

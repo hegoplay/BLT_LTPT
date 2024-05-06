@@ -14,21 +14,39 @@ import javax.swing.JScrollPane;
 import java.awt.Choice;
 import javax.swing.JList;
 import javax.swing.table.DefaultTableModel;
+
+
+import component.CDTable;
 import dao.CDDAO;
+import dao.PersonDAO;
 import entities.CD;
+import entities.Customer;
+import entities.Person;
+import entities.StatiscalEmployee;
+import entities.StorageEmployee;
+import util.Constant;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JRadioButton;
 import java.awt.Button;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class PnlSanPhamTheoThang extends JPanel {
-
+	
 	private static final long serialVersionUID = 1L;
 	private JTable table; // Biến cho bảng hiển thị danh sách sản phẩm
 
@@ -39,8 +57,8 @@ public class PnlSanPhamTheoThang extends JPanel {
 	private JTextField textSoLuong;
 
 	// Các biến JTextField để nhập thông tin sản phẩm mới
-	private JTextField text_MaSP;
-	private JTextField text_TenSP;
+	private JTextField txtMa;
+	private JTextField txtTen;
 	private JTextField text_GiaThanh;
 	private JTextField text_SoLuong;
 
@@ -63,83 +81,95 @@ public class PnlSanPhamTheoThang extends JPanel {
 	// Biến JComboBox cho việc chọn năm
 	private JComboBox comboBoxNam;
 	private DefaultTableModel tableModel;
+	private JLabel lblTitle;
+	private CDTable tblSP;
+	private JComboBox cmbMonth;
+	private JLabel lblSum;
 
+	private Socket socket;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
+	
 	/**
+	 * 
+	 * 
 	 * Create the panel.
 	 */
 	public PnlSanPhamTheoThang() {
 		setLayout(null);
 		
-		Panel panel = new Panel();
-		panel.setBackground(new Color(255, 255, 215));
-		panel.setForeground(new Color(230, 221, 208));
-		panel.setBounds(10, 10, 1318, 777);
-		add(panel);
-		panel.setLayout(null);
+		Panel pnlBG = new Panel();
+		pnlBG.setBackground(new Color(255, 255, 215));
+		pnlBG.setForeground(new Color(230, 221, 208));
+		pnlBG.setBounds(10, 10, 1318, 751);
+		add(pnlBG);
+		pnlBG.setLayout(null);
 		
-		Panel panel_1 = new Panel();
-		panel_1.setBounds(23, 25, 1281, 739);
-		panel_1.setBackground(new Color(128, 255, 255));
-		panel.add(panel_1);
-		panel_1.setLayout(null);
+		Panel pnlMain = new Panel();
+		pnlMain.setBounds(23, 25, 1281, 716);
+		pnlMain.setBackground(new Color(128, 255, 255));
+		pnlBG.add(pnlMain);
+		pnlMain.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Thống kê sản phẩm theo tháng\r\n");
-		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 35));
-		lblNewLabel.setBounds(21, 11, 448, 56);
-		panel_1.add(lblNewLabel);
+		lblTitle = new JLabel("Thống kê sản phẩm theo tháng\r\n");
+		lblTitle.setFont(new Font("Times New Roman", Font.PLAIN, 35));
+		lblTitle.setBounds(21, 11, 448, 56);
+		pnlMain.add(lblTitle);
 		
-		JComboBox coboBoxT = new JComboBox();
-		coboBoxT.setModel(new DefaultComboBoxModel(new String[] {"Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"}));
-		coboBoxT.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		coboBoxT.setBounds(468, 28, 136, 32);
-		panel_1.add(coboBoxT);
+		cmbMonth = new JComboBox();
+		cmbMonth.setModel(new DefaultComboBoxModel(new String[] {"Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"}));
+		cmbMonth.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		cmbMonth.setBounds(468, 28, 136, 32);
+		pnlMain.add(cmbMonth);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Tìm sản phẩm theo mã\r\n");
 		lblNewLabel_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblNewLabel_1_2.setBounds(21, 272, 195, 32);
-		panel_1.add(lblNewLabel_1_2);
+		pnlMain.add(lblNewLabel_1_2);
 		
 		Panel panel_2 = new Panel();
 		panel_2.setBackground(new Color(0, 64, 128));
-		panel_2.setBounds(20, 90, 334, 125);
-		panel_1.add(panel_2);
+		panel_2.setBounds(20, 90, 712, 125);
+		pnlMain.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblNewLabel_1_2_1 = new JLabel("Tổng sản phẩm đã bán\r\n");
+		lblNewLabel_1_2_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1_2_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1_2_1.setBounds(37, 11, 257, 32);
+		lblNewLabel_1_2_1.setBounds(10, 11, 692, 32);
 		panel_2.add(lblNewLabel_1_2_1);
 		lblNewLabel_1_2_1.setFont(new Font("Times New Roman", Font.BOLD, 25));
 		
-		Panel panel_2_1 = new Panel();
-		panel_2_1.setLayout(null);
-		panel_2_1.setBackground(new Color(0, 64, 128));
-		panel_2_1.setBounds(385, 90, 334, 125);
-		panel_1.add(panel_2_1);
-		
-		JLabel lblNewLabel_1_2_1_1 = new JLabel("Tổng sản phẩm hoàn trả\r\n\r\n");
-		lblNewLabel_1_2_1_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1_2_1_1.setFont(new Font("Times New Roman", Font.BOLD, 25));
-		lblNewLabel_1_2_1_1.setBounds(25, 11, 287, 32);
-		panel_2_1.add(lblNewLabel_1_2_1_1);
+		lblSum = new JLabel("0");
+		lblSum.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSum.setForeground(Color.WHITE);
+		lblSum.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		lblSum.setBounds(10, 54, 692, 32);
+		panel_2.add(lblSum);
 		
 		textTimTheoMa = new JTextField();
 		textTimTheoMa.setColumns(10);
 		textTimTheoMa.setBounds(203, 274, 411, 32);
-		panel_1.add(textTimTheoMa);
+		pnlMain.add(textTimTheoMa);
 		
-		Panel panel_2_2 = new Panel();
-		panel_2_2.setLayout(null);
-		panel_2_2.setBackground(new Color(0, 64, 128));
-		panel_2_2.setBounds(20, 318, 712, 411);
-		panel_1.add(panel_2_2);
+		Panel pnlDSSP = new Panel();
+		pnlDSSP.setLayout(null);
+		pnlDSSP.setBackground(new Color(0, 64, 128));
+		pnlDSSP.setBounds(20, 318, 712, 371);
+		pnlMain.add(pnlDSSP);
 		
-		JLabel lblNewLabel_1_2_1_2 = new JLabel("Danh sách sản phẩm");
-		lblNewLabel_1_2_1_2.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1_2_1_2.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		lblNewLabel_1_2_1_2.setBounds(10, 11, 257, 32);
-		panel_2_2.add(lblNewLabel_1_2_1_2);
+		JLabel lblCDTitle = new JLabel("Danh sách sản phẩm");
+		lblCDTitle.setForeground(new Color(255, 255, 255));
+		lblCDTitle.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblCDTitle.setBounds(10, 11, 257, 32);
+		pnlDSSP.add(lblCDTitle);
 		
+		JScrollPane srcSP = new JScrollPane();
+		srcSP.setBounds(10, 54, 692, 306);
+		pnlDSSP.add(srcSP);
+		
+		tblSP = new CDTable();
+		srcSP.setViewportView(tblSP);
 	
 		
 		JButton btnTim = new JButton("Tìm\r\n");
@@ -147,86 +177,86 @@ public class PnlSanPhamTheoThang extends JPanel {
 		btnTim.setBackground(new Color(0, 64, 128));
 		btnTim.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnTim.setBounds(624, 272, 95, 32);
-		panel_1.add(btnTim);
+		pnlMain.add(btnTim);
 		
-		JComboBox comboBoxNam = new JComboBox();
-		comboBoxNam.setModel(new DefaultComboBoxModel(new String[] {"2022", "2023", "2024", "2025"}));
-		comboBoxNam.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		comboBoxNam.setBounds(627, 28, 105, 32);
-		panel_1.add(comboBoxNam);
+		JComboBox cmbYear = new JComboBox();
+		cmbYear.setModel(new DefaultComboBoxModel(new String[] {"2022", "2023", "2024", "2025"}));
+		cmbYear.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		cmbYear.setBounds(627, 28, 105, 32);
+		pnlMain.add(cmbYear);
 		
 		setLayout(null);
         
         JLabel lblThngTinSn = new JLabel("Thông tin sản phẩm");
         lblThngTinSn.setFont(new Font("Times New Roman", Font.PLAIN, 35));
         lblThngTinSn.setBounds(864, 11, 334, 56);
-        panel_1.add(lblThngTinSn);
+        pnlMain.add(lblThngTinSn);
         
-        Panel panel_2_1_1 = new Panel();
-        panel_2_1_1.setLayout(null);
-        panel_2_1_1.setBackground(new Color(0, 64, 128));
-        panel_2_1_1.setBounds(790, 90, 467, 639);
-        panel_1.add(panel_2_1_1);
+        Panel pnlContent = new Panel();
+        pnlContent.setLayout(null);
+        pnlContent.setBackground(new Color(0, 64, 128));
+        pnlContent.setBounds(790, 90, 467, 599);
+        pnlMain.add(pnlContent);
         
-        JLabel lblMaSP = new JLabel("Mã sản phẩm");
-        lblMaSP.setForeground(new Color(255, 255, 255));
-        lblMaSP.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblMaSP.setBounds(10, 23, 105, 32);
-        panel_2_1_1.add(lblMaSP);
+        JLabel lblMa = new JLabel("Mã");
+        lblMa.setForeground(new Color(255, 255, 255));
+        lblMa.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblMa.setBounds(10, 23, 105, 32);
+        pnlContent.add(lblMa);
         
-        text_MaSP = new JTextField();
-        text_MaSP.setColumns(10);
-        text_MaSP.setBounds(10, 55, 208, 32);
-        panel_2_1_1.add(text_MaSP);
+        txtMa = new JTextField();
+        txtMa.setColumns(10);
+        txtMa.setBounds(10, 55, 208, 32);
+        pnlContent.add(txtMa);
         
-        JLabel lblTenSP = new JLabel("Tên sản phẩm");
-        lblTenSP.setForeground(Color.WHITE);
-        lblTenSP.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblTenSP.setBounds(10, 108, 105, 32);
-        panel_2_1_1.add(lblTenSP);
+        JLabel lblTen = new JLabel("Tên sản phẩm");
+        lblTen.setForeground(Color.WHITE);
+        lblTen.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        lblTen.setBounds(10, 108, 105, 32);
+        pnlContent.add(lblTen);
         
-        text_TenSP = new JTextField();
-        text_TenSP.setColumns(10);
-        text_TenSP.setBounds(10, 143, 447, 32);
-        panel_2_1_1.add(text_TenSP);
+        txtTen = new JTextField();
+        txtTen.setColumns(10);
+        txtTen.setBounds(10, 143, 447, 32);
+        pnlContent.add(txtTen);
         
         JLabel lblGiaThanh = new JLabel("Giá thành");
         lblGiaThanh.setForeground(Color.WHITE);
         lblGiaThanh.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         lblGiaThanh.setBounds(10, 197, 105, 32);
-        panel_2_1_1.add(lblGiaThanh);
+        pnlContent.add(lblGiaThanh);
         
         text_GiaThanh = new JTextField();
         text_GiaThanh.setColumns(10);
         text_GiaThanh.setBounds(10, 234, 447, 32);
-        panel_2_1_1.add(text_GiaThanh);
+        pnlContent.add(text_GiaThanh);
         
         JLabel lblSoLuong = new JLabel("Số lượng\r\n");
         lblSoLuong.setForeground(Color.WHITE);
         lblSoLuong.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         lblSoLuong.setBounds(10, 284, 105, 32);
-        panel_2_1_1.add(lblSoLuong);
+        pnlContent.add(lblSoLuong);
         
         JLabel lblTrangThai = new JLabel("Trạng thái\r\n");
         lblTrangThai.setForeground(Color.WHITE);
         lblTrangThai.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         lblTrangThai.setBounds(10, 362, 105, 32);
-        panel_2_1_1.add(lblTrangThai);
+        pnlContent.add(lblTrangThai);
         
         text_SoLuong = new JTextField();
         text_SoLuong.setColumns(10);
         text_SoLuong.setBounds(10, 319, 447, 32);
-        panel_2_1_1.add(text_SoLuong);
+        pnlContent.add(text_SoLuong);
         
         JRadioButton rdbtnConHang = new JRadioButton("Còn hàng");
         rdbtnConHang.setBounds(10, 401, 111, 23);
-        panel_2_1_1.add(rdbtnConHang);
+        pnlContent.add(rdbtnConHang);
         
         Panel panel_1_1 = new Panel();
         JRadioButton rdbtHetHang = new JRadioButton("Hết hàng");
         rdbtHetHang.setBounds(161, 401, 111, 23);
-        panel_2_1_1.add(rdbtHetHang);
-		panel_1_1.add(textName);
+        pnlContent.add(rdbtHetHang);
+//		panel_1_1.add(textName);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Giá thành");
 		lblNewLabel_1_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
@@ -289,10 +319,50 @@ public class PnlSanPhamTheoThang extends JPanel {
 		btnXoa.setBounds(375, 468, 83, 32);
 		panel_1_1.add(btnXoa);
 		
+		ButtonGroup btnGroup = new ButtonGroup();
+		btnGroup.add(rdbtnCon);
+		btnGroup.add(rdbtnHet);
+		
 		setLayout(null);
 		
+		tblSP.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int row = tblSP.getSelectedRow();
+				CD p = CDDAO.instance.findById(tblSP.getValueAt(row, 0).toString());
+				txtMa.setText(p.getCdID());
+				txtTen.setText(p.getName());
+				text_GiaThanh.setText(p.getPrice() + "");
+				text_SoLuong.setText(p.getQuantity() + "");
+				if (p.isStatus()) {
+					rdbtnConHang.setSelected(true);
+				} else {
+					rdbtHetHang.setSelected(true);
+				}
+				
+			}
+		});
+		
+		loadData();
+//		CDDAO.instance.getCDinTime(5,2024);
 		
 
 	}
 
+	private void loadData() {
+		// TODO Auto-generated method stub
+//		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(cmbMonth.getSelectedIndex() + 1, 2022);
+		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(5,2024);
+		List<CD> ls = new ArrayList<>();
+		int sum = 0;
+//		iterate pair through map
+		
+		
+		for (Entry<CD,Integer> e : listCD.entrySet()) {
+			sum += e.getValue();
+			ls.add(e.getKey());
+		}
+		lblSum.setText(sum + "");
+		tblSP.ReloadTable(ls);
+	}
 }

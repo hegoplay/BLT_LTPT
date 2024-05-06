@@ -357,9 +357,7 @@ public class PnlConfirmOrder extends JPanel implements ActionListener {
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}	
 	}
 
 	@Override

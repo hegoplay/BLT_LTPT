@@ -6,6 +6,11 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +29,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import component.OrderTable;
+import entities.Order;
+import entities.OrderStatus;
+import util.storageEvents.StrEmployeeEvt;
+
 public class PnlOrderBill extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 10000234852L;
@@ -33,72 +43,66 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 	private JTextField txtMaSP;
 	private JTextField txtSanPham;
 	private JTextField txtDiaChi;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PnlOrderBill frame = new PnlOrderBill();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private OrderTable tblOrder;
 
+	
+	private Socket socket;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
+	
 	/**
 	 * Create the frame.
 	 */
-	public PnlOrderBill() {
+	public PnlOrderBill(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) {
+		this.socket = socket;
+		this.oos = oos;
+		this.ois = ois;
 		
 		this.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "X\u00E1c Nh\u1EADn \u0110\u01A1n H\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(10, 15, 322, 707);
-		this.add(panel);
-		panel.setLayout(null);
+		JPanel pnlFind = new JPanel();
+		pnlFind.setBorder(new TitledBorder(null, "X\u00E1c Nh\u1EADn \u0110\u01A1n H\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlFind.setBackground(new Color(255, 255, 255));
+		pnlFind.setBounds(10, 11, 322, 589);
+		this.add(pnlFind);
+		pnlFind.setLayout(null);
 		
 		JLabel lblTenKH = new JLabel("Tên Khách Hàng");
 		lblTenKH.setBounds(10, 23, 120, 23);
-		panel.add(lblTenKH);
+		pnlFind.add(lblTenKH);
 		
 		txtTenKH = new JTextField();
 		txtTenKH.setBounds(10, 47, 239, 20);
-		panel.add(txtTenKH);
+		pnlFind.add(txtTenKH);
 		txtTenKH.setColumns(10);
 		
 		JLabel lblMaSP = new JLabel("Mã Sản Phẩm");
 		lblMaSP.setBounds(10, 78, 120, 23);
-		panel.add(lblMaSP);
+		pnlFind.add(lblMaSP);
 		
 		txtMaSP = new JTextField();
 		txtMaSP.setColumns(10);
 		txtMaSP.setBounds(10, 101, 239, 20);
-		panel.add(txtMaSP);
+		pnlFind.add(txtMaSP);
 		
 		JLabel lblTenSP = new JLabel("Tên Sản Phẩm");
 		lblTenSP.setBounds(10, 134, 120, 23);
-		panel.add(lblTenSP);
+		pnlFind.add(lblTenSP);
 		
 		txtSanPham = new JTextField();
 		txtSanPham.setColumns(10);
 		txtSanPham.setBounds(10, 156, 239, 20);
-		panel.add(txtSanPham);
+		pnlFind.add(txtSanPham);
 		
 		JLabel lblDiaChi = new JLabel("Địa Chỉ");
 		lblDiaChi.setBounds(10, 187, 120, 23);
-		panel.add(lblDiaChi);
+		pnlFind.add(lblDiaChi);
 		
 		txtDiaChi = new JTextField();
 		txtDiaChi.setColumns(10);
 		txtDiaChi.setBounds(10, 210, 239, 20);
-		panel.add(txtDiaChi);
+		pnlFind.add(txtDiaChi);
 		
 		JButton btnTimHD = new JButton("Tìm Hóa Đơn");
 		btnTimHD.addActionListener(new ActionListener() {
@@ -106,32 +110,43 @@ public class PnlOrderBill extends JPanel implements ActionListener {
 			}
 		});
 		btnTimHD.setBounds(10, 275, 141, 53);
-		panel.add(btnTimHD);
+		pnlFind.add(btnTimHD);
 		
 		JButton btnInHoaDon = new JButton("In Hóa Đơn");
 		btnInHoaDon.setBounds(171, 275, 141, 53);
-		panel.add(btnInHoaDon);
+		pnlFind.add(btnInHoaDon);
 		
-		JPanel panel_1 = new JPanel(new BorderLayout()); 
-	    panel_1.setBounds(350, 15, 960, 585);
-	    this.add(panel_1);
+		JPanel pnlOrder = new JPanel(new BorderLayout()); 
+	    pnlOrder.setBounds(350, 11, 960, 589);
+	    this.add(pnlOrder);
 	    
-	    JScrollPane scrollPane_1 = new JScrollPane();
-	    panel_1.add(scrollPane_1, BorderLayout.CENTER); 
+	    JScrollPane scrOrder = new JScrollPane();
+	    pnlOrder.add(scrOrder, BorderLayout.CENTER); 
 						
-		table_1 = new JTable();
-		scrollPane_1.setViewportView(table_1);
-		JTableHeader tb1 = table_1.getTableHeader();
-		tb1.setBackground(new Color(221, 242, 251));
-		tb1.setFont(new Font("Tahoma", Font.BOLD, 16));
-		int rowHeight1 = 30;
-		int rowMargin1 = 10;
-		String[] col = {"Tên Khách Hàng","Mã Sản Phẩm", "Tên sản phẩm","Số Lượng","Tổng Tiền","Ngày Lập","Ngày Giao","Địa Chỉ" };
-		modell = new DefaultTableModel(col, 0);
-		table_1.setModel(modell);
+		tblOrder = new OrderTable();
+		scrOrder.setViewportView(tblOrder);
 		
 		btnInHoaDon.addActionListener(this);
 		btnTimHD.addActionListener(this);
+		
+		loadAllOrders();
+	}
+
+	private void loadAllOrders() {
+		// TODO Auto-generated method stub
+		try {
+			oos.writeObject(StrEmployeeEvt.GET_ORDER);
+			oos.writeObject("all");
+//			oos.writeObject(null);
+			oos.flush();
+			List<Order> orders = (List<Order>) ois.readObject();
+			System.out.println("YES");
+			System.out.println(orders.size());
+			tblOrder.ReloadTable(orders);
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 
 	@Override

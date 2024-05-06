@@ -56,7 +56,7 @@ public class StorageEmployeeHandler implements Runnable {
 						// do something
 						o = OrderDAO.instance.getOrderByStatus((OrderStatus) obj);
 					}
-					else {						
+					else if (obj instanceof String&&((String) obj).equals("all")){						
 						o = OrderDAO.instance.getAll();
 					}
 					oos.writeObject(o);

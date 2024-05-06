@@ -135,7 +135,7 @@ public class EmployeeFrame extends JFrame {
         pnlBackground.setLayout(new BorderLayout(0, 0));
         pnlContent.add(pnlBackground, "Pnl_Background");
         
-        PnlOrderBill pnlOrderBill = new PnlOrderBill();
+        PnlOrderBill pnlOrderBill = new PnlOrderBill(socket, oos, ois);
         pnlContent.add(pnlOrderBill, "Pnl_OrderBill");
 		
         PnlConfirmOrder pnlConfirmOrder = new PnlConfirmOrder(socket, oos, ois);

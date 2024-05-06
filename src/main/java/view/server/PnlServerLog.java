@@ -120,6 +120,7 @@ public class PnlServerLog extends JPanel implements ActionListener {
 							}
 							else if (type == PersonType.STORAGE_EMPLOYEE) {
 								 handler = new StorageEmployeeHandler(accept,ois,oos);
+								 textArea.append("Storage employee connected\n");
 							}
 							Thread thread = new Thread(handler);
 							clients.add(thread);

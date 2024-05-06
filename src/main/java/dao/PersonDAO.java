@@ -25,7 +25,6 @@ public class PersonDAO implements InterfaceDAO<Person> {
 		manager.persist(obj.getAccount());
 		manager.persist(obj);
 		manager.getTransaction().commit();
-		
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import entities.CD;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import util.ConnectDB;
 
 public class CDDAO implements InterfaceDAO<CD>{
@@ -17,33 +18,68 @@ public class CDDAO implements InterfaceDAO<CD>{
 	
 	@Override
 	public void insert(CD obj) {
-		// TODO Auto-generated method stub
-		
+		EntityTransaction transaction = null;
+		try {
+			transaction = StorageManager.getTransaction();
+			transaction.begin();
+			StorageManager.persist(obj);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+		}
 	}
 
 	@Override
 	public void update(CD obj) {
-		// TODO Auto-generated method stub
-		
+		EntityTransaction transaction = null;
+		try {
+			transaction = StorageManager.getTransaction();
+			transaction.begin();
+			StorageManager.merge(obj);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+		}
 	}
 
 	@Override
 	public void delete(CD obj) {
-		// TODO Auto-generated method stub
-		
+		EntityTransaction transaction = null;
+		try {
+			transaction = StorageManager.getTransaction();
+			transaction.begin();
+			StorageManager.remove(obj);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+		}
 	}
 
 	@Override
 	public CD findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return StorageManager.find(CD.class, id);
 	}
 
 	@Override
 	public List<CD> getAll() {
-		// TODO Auto-generated method stub
 //		help me get all cd in database with the help of hibernate
 		return StorageManager.createQuery("from CD", CD.class).getResultList();
 	}
+
+	
+	public List<CD> findByNameAndPrice(String cdName, String priceFilter) {
+	    String sortOrder = "Ascending".equalsIgnoreCase(priceFilter) ? "asc" : "desc";
+	    String queryString = "from CD where name like :cdName order by price " + sortOrder;
+		
+		return StorageManager.createQuery(queryString, CD.class)
+				.setParameter("cdName", "%" + cdName + "%")
+				.getResultList();
+    }
 
 }

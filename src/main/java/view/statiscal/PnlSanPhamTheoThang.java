@@ -367,7 +367,9 @@ public class PnlSanPhamTheoThang extends JPanel implements ActionListener {
 		
 		for (Entry<CD,Integer> e : listCD.entrySet()) {
 			sum += e.getValue();
-			ls.add(e.getKey());
+			CD cd = e.getKey();
+			cd.setQuantity(e.getValue());
+			ls.add(cd);
 		}
 		lblSum.setText(sum + "");
 		tblSP.ReloadTable(ls);

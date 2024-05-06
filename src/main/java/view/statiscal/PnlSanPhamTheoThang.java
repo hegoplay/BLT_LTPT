@@ -45,7 +45,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
-public class PnlSanPhamTheoThang extends JPanel {
+public class PnlSanPhamTheoThang extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	private JTable table; // Biến cho bảng hiển thị danh sách sản phẩm
@@ -89,6 +89,8 @@ public class PnlSanPhamTheoThang extends JPanel {
 	private Socket socket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
+	private JComboBox cmbYear;
+	private JButton btnTim;
 	
 	/**
 	 * 
@@ -118,6 +120,7 @@ public class PnlSanPhamTheoThang extends JPanel {
 		
 		cmbMonth = new JComboBox();
 		cmbMonth.setModel(new DefaultComboBoxModel(new String[] {"Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"}));
+		cmbMonth.setSelectedIndex(4);
 		cmbMonth.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		cmbMonth.setBounds(468, 28, 136, 32);
 		pnlMain.add(cmbMonth);
@@ -172,15 +175,16 @@ public class PnlSanPhamTheoThang extends JPanel {
 		srcSP.setViewportView(tblSP);
 	
 		
-		JButton btnTim = new JButton("Tìm\r\n");
+		btnTim = new JButton("Tìm\r\n");
 		btnTim.setForeground(new Color(255, 255, 255));
 		btnTim.setBackground(new Color(0, 64, 128));
 		btnTim.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnTim.setBounds(624, 272, 95, 32);
 		pnlMain.add(btnTim);
 		
-		JComboBox cmbYear = new JComboBox();
+		cmbYear = new JComboBox();
 		cmbYear.setModel(new DefaultComboBoxModel(new String[] {"2022", "2023", "2024", "2025"}));
+		cmbYear.setSelectedIndex(2);
 		cmbYear.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		cmbYear.setBounds(627, 28, 105, 32);
 		pnlMain.add(cmbYear);
@@ -343,16 +347,19 @@ public class PnlSanPhamTheoThang extends JPanel {
 			}
 		});
 		
+		
+		
 		loadData();
 //		CDDAO.instance.getCDinTime(5,2024);
 		
+		btnTim.addActionListener(this);
 
 	}
 
 	private void loadData() {
 		// TODO Auto-generated method stub
-//		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(cmbMonth.getSelectedIndex() + 1, 2022);
-		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(5,2024);
+		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(cmbMonth.getSelectedIndex() + 1, 2022 + cmbYear.getSelectedIndex());
+//		Map<CD,Integer> listCD = CDDAO.instance.getCDinTime(5,2024);
 		List<CD> ls = new ArrayList<>();
 		int sum = 0;
 //		iterate pair through map
@@ -364,5 +371,13 @@ public class PnlSanPhamTheoThang extends JPanel {
 		}
 		lblSum.setText(sum + "");
 		tblSP.ReloadTable(ls);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == btnTim) {
+			loadData();
+		}
 	}
 }

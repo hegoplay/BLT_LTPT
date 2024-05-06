@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.CDDAO;
 import entities.CD;
+import util.clients.CustomerClient;
 
 public class CartPanel extends JPanel implements ActionListener {
 
@@ -33,9 +34,10 @@ public class CartPanel extends JPanel implements ActionListener {
 	private JButton btn_find;
 	private JButton btn_placeOrder;
 	
-	// Khang (03/05/2024) : this variable is used to store the selected CDs from the table for order confirmation..
+	// This variable is used to store the selected CDs from the table for order confirmation.
 	public static List<CD> orderCDs = new ArrayList<CD>();
-	// Khang (03/05/2024) : this is the temporary global variable to store the selected CDs for cart panel.
+	
+	// This is the temporary variable used to store the selected CDs in the Find panel to fill in the cart table.
 	public static List<CD> cartCDs = new ArrayList<CD>();
 
 	/**
@@ -125,17 +127,20 @@ public class CartPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		String action = e.getActionCommand();
+		
 		if (action.equals("Find")) {
+			
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
-			loadCartData(CDDAO.instance.findByNameAndPrice(cdName, priceFilter));
+			loadCartData(CustomerClient.instance.findByNameAndPrice(cdName, priceFilter));
+			
 		} else if (action.equals("Place order")) {
+			
 			// Get selected rows from the table.
 			orderCDs = getSelectedCDs();
 			
-			// prompt the user with the order confirmation panel.
+			// prompt the user with the order confirmation JDialog.
 		    JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		    
 		    OrderConfirmationDialog orderConfirmationDialog = new OrderConfirmationDialog(parentFrame);
@@ -143,22 +148,22 @@ public class CartPanel extends JPanel implements ActionListener {
 		    orderConfirmationDialog.setVisible(true);
 		    orderConfirmationDialog.setLocationRelativeTo(null);
 
+		    // Reload the data for the cart table (due to possible changes in the Order Confirmation dialog).
 		    loadCartData(cartCDs);
 		}
 	}
 
-	// Load the selected CDs to the Cart table.
+	// Load the CD data to the Cart table.
 	public void loadCartData(List<CD> cds) {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.setRowCount(0);
 		
-		// Retrieve the selected CDs from the selectedCDs list in CustomerGui and add them to the table.
 		cds.forEach((cd) -> {
 			model.addRow(new Object[] { cd.getCdID(), cd.getName(), cd.getPrice(), cd.isStatus(), cd.getQuantity(), false });
 		});
 	}
 	
-	// Method to retrieve the selected CDs from the cart table.
+	// Method to retrieve the selected CDs from the cart table (These CDs will be displayed in the Order Confirmation dialog).
 	public List<CD> getSelectedCDs() {
 		List<CD> selectedCDs = new ArrayList<>();
 		
@@ -167,7 +172,7 @@ public class CartPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < selectedRows.length; i++) {
 			int selectedRow = selectedRows[i];
 			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
-			CD selectedCD = CDDAO.instance.findById(selectedCdID);
+			CD selectedCD = CustomerClient.instance.findById(selectedCdID, CD.class);
 			selectedCDs.add(selectedCD);
 		}
 		return selectedCDs;

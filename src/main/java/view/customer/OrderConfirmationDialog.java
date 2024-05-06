@@ -30,7 +30,9 @@ import entities.Customer;
 import entities.Order;
 import entities.OrderDetail;
 import entities.OrderStatus;
+import entities.Person;
 import entities.StorageEmployee;
+import util.clients.CustomerClient;
 
 public class OrderConfirmationDialog extends JDialog implements ActionListener {
 
@@ -46,22 +48,6 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 	private JTextField text_street;
 	private JTextField text_number;
 
-
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					OrderConfirmationView frame = new OrderConfirmationView();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the frame.
@@ -235,7 +221,7 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		for (int i = 0; i < rows.length; i++) {
 			
 			// get the selected CD from the table and remove it from the orderCDs list in CartPanel.
-			CD removeCd = CDDAO.instance.findById((String) table.getValueAt(rows[i], 0));
+			CD removeCd = CustomerClient.instance.findById((String) table.getValueAt(rows[i], 0), CD.class);
 			CartPanel.orderCDs.remove(removeCd);
 		}
 		loadTableData(CartPanel.orderCDs);
@@ -252,9 +238,10 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		Order order = new Order();
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		
-		// MISSING INFORMATION - NEED TO IMPLEMENT !!!
 		Address shippingAddress = new Address(text_zip.getText().trim(), text_city.getText().trim(), text_street.getText().trim(), text_number.getText().trim());
-		Customer customer = (Customer) PersonDAO.instance.findById(CustomerGui.customerID);
+		Customer customer = (Customer) CustomerClient.instance.findById(CustomerGui.customerID, Person.class);
+		
+		// Append the newly created order to the customer's order list.
 		customer.getOrders().add(order);
 		
 		order.setCreatedDate(LocalDate.now());
@@ -262,11 +249,14 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		order.setShippingAddress(shippingAddress);
 		order.setStorageEmployee(null);
 		order.setCustomer(customer);
+		
 		// Order created by Customer is always in PENDING status. Storage employee will process it later.
 		order.setStatus(OrderStatus.PENDING);
 		
+		System.out.println("\nInserting order: " + order.getOrderId());
+		
 		// Insert the order into the database.
-		OrderDAO.instance.insert(order);
+		CustomerClient.instance.insert(order, Order.class);
 		
 		// process the order details.
 		processOrderDetails(order);
@@ -288,11 +278,14 @@ public class OrderConfirmationDialog extends JDialog implements ActionListener {
 		// Loop through the table and insert each order detail into the database.
 		for (int i = 0; i < model.getRowCount(); i++) {
 			
-			CD cd = CDDAO.instance.findById((String) model.getValueAt(i, 0));
+			CD cd = CustomerClient.instance.findById((String) model.getValueAt(i, 0), CD.class);
 			int orderedQuantity = (int) model.getValueAt(i, 3);
 			
 			OrderDetail orderDetail = new OrderDetail(order, cd, orderedQuantity);
-			OrderDetailDAO.instance.insert(orderDetail);
+			
+			System.out.println("Inserting order detail: " + orderDetail.getOrder().getOrderId());
+			
+			CustomerClient.instance.insert(orderDetail, OrderDetail.class);
 		}
 	}
 	

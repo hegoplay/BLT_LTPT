@@ -6,8 +6,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import dao.PersonDAO;
 import entities.Customer;
+import entities.Person;
+import util.clients.CustomerClient;
 
 public class MyProfilePanel extends JPanel {
 
@@ -86,7 +87,7 @@ public class MyProfilePanel extends JPanel {
 	public void loadProfileData() {
 		// Load user data to text fields.
 		// Use DAO to get user data from database.
-		Customer customer = (Customer) PersonDAO.instance.findById(CustomerGui.customerID);
+		Customer customer = (Customer) CustomerClient.instance.findById(CustomerGui.customerID, Person.class);
 		
 		textField_userId.setText(customer.getPersonID());
 		textField_name.setText(customer.getName());

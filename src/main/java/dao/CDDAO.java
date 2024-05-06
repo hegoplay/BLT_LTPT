@@ -74,8 +74,8 @@ public class CDDAO implements InterfaceDAO<CD>{
 
 	
 	public List<CD> findByNameAndPrice(String cdName, String priceFilter) {
-	    String sortOrder = "asc".equalsIgnoreCase(priceFilter) ? "asc" : "desc";
-	    String queryString = "from CD where cdName like :cdName order by price " + sortOrder;
+	    String sortOrder = "Ascending".equalsIgnoreCase(priceFilter) ? "asc" : "desc";
+	    String queryString = "from CD where name like :cdName order by price " + sortOrder;
 		
 		return StorageManager.createQuery(queryString, CD.class)
 				.setParameter("cdName", "%" + cdName + "%")

@@ -27,6 +27,7 @@ import entities.Address;
 import entities.Customer;
 import entities.Order;
 import entities.Person;
+import util.clients.CustomerClient;
 
 public class CustomerGui extends JFrame implements ActionListener {
 
@@ -149,6 +150,7 @@ public class CustomerGui extends JFrame implements ActionListener {
 		menuItem_myCart.addActionListener(this);
 		menuItem_myOrders.addActionListener(this);
 		menuItem_profile.addActionListener(this);
+		menuItem_signOut.addActionListener(this);
 	
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(50, 0, 50, 0));
@@ -168,11 +170,17 @@ public class CustomerGui extends JFrame implements ActionListener {
 			this.cartPanel.loadCartData(CartPanel.cartCDs);
 		}
 		else if (command.equals("My Orders")) {
-			// Load the orders of the logged in customer.
+			// Load the orders of the currently logged in customer.
 			this.myOrdersPanel.loadOrderTableData();
-		} else if (command.equals("My profile")) {
-			// Load the profile of the logged in customer.
+		}
+		else if (command.equals("My profile")) {
+			// Load the profile of the currently logged in customer.
 			this.myProfilePanel.loadProfileData();
+		} 
+		else if (command.equals("Sign out")) {
+			// Log out the current user & release all the resoucres.
+			CustomerClient.close();
+			System.exit(0);
 		}
 	}
 }

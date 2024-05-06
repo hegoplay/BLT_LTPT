@@ -22,6 +22,7 @@ import dao.OrderDetailDAO;
 import entities.Order;
 import entities.OrderDetail;
 import entities.OrderStatus;
+import util.clients.CustomerClient;
 
 public class OrderPanel extends JPanel implements MouseListener {
 
@@ -211,9 +212,11 @@ public class OrderPanel extends JPanel implements MouseListener {
 		List<Order> result = new ArrayList<>();
 		
 		// DAO to get orders.
-		result = OrderDAO.instance.findByCustomerId(CustomerGui.customerID);
+//		result = OrderDAO.instance.findByCustomerId(CustomerGui.customerID);
 		
-
+		// Use client to request all Order(s) attached to the currently logged in customer.
+		result = CustomerClient.instance.findByCustomerId(CustomerGui.customerID);
+		
 		DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
 		model.setRowCount(0);
 		for (Order order : result) {
@@ -228,8 +231,8 @@ public class OrderPanel extends JPanel implements MouseListener {
 	public void loadOrderDetailData(String orderId) {
 		List<OrderDetail> result = new ArrayList<>();
 		
-		// Use DAO to get order detail(s) of the provided orderId.
-		result = OrderDetailDAO.instance.findByOrderId(orderId);
+		// Use client to request the order details attached to the provided orderId.
+		result = CustomerClient.instance.findByOrderId(orderId);
 
 		DefaultTableModel model = (DefaultTableModel) orderDetailTable.getModel();
 		model.setRowCount(0);
@@ -238,9 +241,10 @@ public class OrderPanel extends JPanel implements MouseListener {
 					orderDetail.getQuantity(), orderDetail.getCd().getPrice(), orderDetail.getSubTotal() });
 		}
 
-		// Set total, status, shipped date, address.
-		Order order = OrderDAO.instance.findById(orderId);
+		// Use client to request the Order object.
+		Order order = CustomerClient.instance.findById(orderId, Order.class);
 
+		// Set total, status, shipped date, address.
 		double total = 0;
 		for (OrderDetail od : result) {
 			total += od.getSubTotal();

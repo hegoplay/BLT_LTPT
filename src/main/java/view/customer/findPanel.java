@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.CDDAO;
 import entities.CD;
+import util.clients.CustomerClient;
 
 public class findPanel extends JPanel implements ActionListener {
 
@@ -96,8 +97,9 @@ public class findPanel extends JPanel implements ActionListener {
 		if (command.equals("Find")) {
 			String cdName = textField_cdName.getText();
 			String priceFilter = comboBox_priceFilter.getSelectedItem().toString();
-			// Call the method to set data for the table.
-			setTableData(CDDAO.instance.findByNameAndPrice(cdName, priceFilter));
+
+			// Use client to request data from the server (ie. the list of CDs matching the search criteria)
+			setTableData(CustomerClient.instance.findByNameAndPrice(cdName, priceFilter));
 
 		} else if (command.equals("Add to cart")) {
 			// Call the method to get and store selected CDs
@@ -114,10 +116,11 @@ public class findPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	// Method to retrieve selected CDs from the table and store it into the temporary varibale selectedCDs in CustomerGui.
+	// Method to retrieve selected CDs from the table and store it into the temporary varibale selectedCDs in CartPanel.
 	public void getAndStoreSelectedCDs() {
 		// Get the selected rows from the table
 		int[] selectedRows = table.getSelectedRows();
+		
 		// Loop through the selected rows
 		for (int i = 0; i < selectedRows.length; i++) {
 			// Get the selected row
@@ -126,8 +129,8 @@ public class findPanel extends JPanel implements ActionListener {
 			// Get the selected CD id from the selected row
 			String selectedCdID = table.getValueAt(selectedRow, 0).toString();
 
-			// Add the selected CD to the selectedCDs list
-			CD selectedCD = CDDAO.instance.findById(selectedCdID);
+			// Use client to request data insertion from the server.
+			CD selectedCD = CustomerClient.instance.findById(selectedCdID, CD.class);
 
 			CartPanel.cartCDs.add(selectedCD);
 		}

@@ -16,6 +16,7 @@ public class CDTable extends JTable {
 	private static final long serialVersionUID = -2889426248835663159L;
 
 private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","số lượng","giá","Trạng thái"};
+
 	
 	private final int 
 	id = 0,
@@ -53,6 +54,11 @@ private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","số lượng
 				// TODO Auto-generated method stub
 				return false;
 			}
+			@Override
+			public Object getValueAt(int row, int column) {
+				// TODO Auto-generated method stub
+				return super.getValueAt(row, column);
+			}
 		};
 		this.setModel(model);
 		
@@ -70,4 +76,5 @@ private static final String[] COLUMN_NAMES = {"mã", "tên đĩa","số lượng
                     cd.getQuantity(), cd.getPrice(),cd.isStatus()});
 		}
 	}
+	
 }

@@ -58,6 +58,7 @@ public class StatisticalEmployeeHandler implements Runnable {
 				
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
+				running = false;
 			}
 			
 		}

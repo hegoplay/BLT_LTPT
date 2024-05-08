@@ -7,11 +7,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -24,6 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import entities.Account;
+import entities.Address;
 import entities.CD;
 import entities.Customer;
 import entities.Person;
@@ -43,8 +48,6 @@ public class CustomerGui extends JFrame implements ActionListener {
 	private JMenuItem menuItem_profile;
 	private JMenuItem menuItem_signOut;
 	private JMenuItem menuItem_mainPage;
-	
-	private Socket socket;
 	
 	private JPanel cardPanel;
 	private CardLayout cardLayout;
@@ -117,12 +120,12 @@ public class CustomerGui extends JFrame implements ActionListener {
 		// Add some rigid space to align Shopping to the right
 		menuBar_main.add(Box.createRigidArea(new Dimension(732, 12)));
 		
-		Socket socket = new Socket("172.28.64.180", 8603);
-		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		
+		Address address = new Address("7000", "Sai Gon", "3/2", "888");
+		Account account = new Account("hegoplay", "123456");
 		
-		CustomerGui.customer = (Customer) CustomerClient.establish();
+		CustomerGui.customer = new Customer("KHPTM651750", "Pham The Manh", LocalDate.now(),
+				address, "pmanhh19@gmail.com", account, LocalDate.now(), new HashSet<>());
 
 		menu_helloUser = new JMenu("Hello " + CustomerGui.customer.getName() + " !");
 		menu_helloUser.setFont(new Font("Segoe UI", Font.BOLD, 17));
@@ -132,13 +135,12 @@ public class CustomerGui extends JFrame implements ActionListener {
 
 		menuItem_profile = new JMenuItem("My profile");
 		menuItem_profile.setIcon(new ImageIcon(
-				"D:\\IUH\\6th_semester\\distributed_programming_java\\course_project\\BLT_LTPT\\src\\main\\resources\\images\\profile_icon.png"));
+				new File("src/main/resources/images/profile_icon.png").getAbsolutePath()));
 		menuItem_profile.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menu_helloUser.add(menuItem_profile);
 
 		menuItem_signOut = new JMenuItem("Sign out");
-		menuItem_signOut.setIcon(new ImageIcon(
-				"D:\\IUH\\6th_semester\\distributed_programming_java\\course_project\\BLT_LTPT\\src\\main\\resources\\images\\sign_out_icon.png"));
+		menuItem_signOut.setIcon(new ImageIcon(new File("src/main/resources/images/sign_out_icon.png").getAbsolutePath()));
 		menuItem_signOut.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menu_helloUser.add(menuItem_signOut);
 		getContentPane().setLayout(new BorderLayout(0, 0));

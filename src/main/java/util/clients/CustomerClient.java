@@ -19,7 +19,8 @@ import util.PersonType;
 public class CustomerClient {
 	public static CustomerClient instance = new CustomerClient();
 
-	private static final String HOST = "172.28.64.180";
+//	private static final String HOST = "172.28.64.180";
+	private static final String HOST = "localhost";
 	private static final int PORT = Constant.PORT;
 
 	private static Socket serverSocket = null;
@@ -30,24 +31,7 @@ public class CustomerClient {
 		super();
 	}
 
-	public static Person establish() {
-		if (serverSocket == null) {
-			try {
-				serverSocket = new Socket(HOST, PORT);
-				out = new ObjectOutputStream(serverSocket.getOutputStream());
-				in = new ObjectInputStream(serverSocket.getInputStream());
 
-				out.writeObject(null);
-				out.flush();
-				
-				Person person = (Person) in.readObject();
-				return person;
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 	public static void connect() {
 		if (serverSocket == null) {

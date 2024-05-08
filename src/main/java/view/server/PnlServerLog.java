@@ -127,11 +127,6 @@ public class PnlServerLog extends JPanel implements ActionListener {
 								 handler = new StorageEmployeeHandler(accept,ois,oos);
 								 textArea.append("Storage employee connected\n");
 							}
-							else if (type == null) {
-								textArea.append("Client type is null\n");
-								oos.writeObject(PersonDAO.instance.findById("KHPTM651750"));
-								oos.flush();
-							}
 //							Thread thread = new Thread(handler);
 //							clients.add(thread);
 //							thread.start();

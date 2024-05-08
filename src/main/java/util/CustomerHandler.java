@@ -139,6 +139,7 @@ public class CustomerHandler implements Runnable {
 
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
+				isRunning = false;
 			}
 		}
 	}

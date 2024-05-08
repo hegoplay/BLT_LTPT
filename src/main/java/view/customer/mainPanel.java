@@ -37,7 +37,7 @@ public class mainPanel extends JPanel {
 		add(lblNewLabel_4);
 		
 		JLabel lblNewLabel_5 = new JLabel("New label");
-		lblNewLabel_5.setIcon(new ImageIcon("D:\\IUH\\6th_semester\\distributed_programming_java\\course_project\\BLT_LTPT\\src\\main\\resources\\images\\CD_store.jpg"));
+		lblNewLabel_5.setIcon(new ImageIcon("src\\main\\resources\\images\\CD_store.jpg"));
 		lblNewLabel_5.setBounds(67, 68, 940, 368);
 		add(lblNewLabel_5);
 
